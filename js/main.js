@@ -17,32 +17,37 @@ $('document').ready(function () {
 	// check if the user exists in the database, if not insert them
 	db.select("users", {
 		username: username
-	}, function(data) {
+	}, function (data) {
 		//if the user doesn't exists, add them and refresh
 		if (data.length == 0) {
-			db.insert("users", {username: username,	team: 1	}, function(data){
+			db.insert("users", {
+				username: username,
+				team: 1
+			}, function (data) {
 				document.location = '';
 			});
-		//otherwise show the map
+			//otherwise show the map
 		} else {
-			$('p.result').html('Username: '+data[0].username);
+			$('p.result').html('Username: ' + data[0].username);
 			user = data[0];
 			showMap();
 			getUsers();
-			setInterval(getUsers,10000);
+			setInterval(getUsers, 10000);
 		}
-
 	});
-
-
-	$('button').click(function(){
+	//refresh on button press
+	$('button.getusers').click(function () {
 		getUsers();
 	});
 	var map = new mapper();
 
-
-	function getUsers(){
-		db.select('users',{ "username": { "$ne" : user.username }},function(data){
+	function getUsers() {
+		//select all users that are not you
+		db.select('users', {
+			"username": {
+				"$ne": user.username
+			}
+		}, function (data) {
 			console.log('data received');
 			//plot the other users
 			map.clear();
@@ -53,13 +58,18 @@ $('document').ready(function () {
 			map.geocodeUser(user, 'http://maps.google.com/mapfiles/ms/icons/green-dot.png');
 		});
 	}
-	function showMap(){
-		console.log('showmap called');
+
+	function showMap() {
 		watchLocation(function (coords) {
 			$('p.coords').html('Location: ' + coords.latitude + ',' + coords.longitude);
 			var locate = coords.latitude + ',' + coords.longitude;
 			//send your location to the server
-			db.update('users', user._id.$oid, { location: locate, date: new Date().toISOString() }, function(data){ console.log(data); });
+			db.update('users', user._id.$oid, {
+				location: locate,
+				date: new Date().toISOString()
+			}, function (data) {
+				console.log(data);
+			});
 			//get the other users
 			user.location = locate;
 			getUsers();
