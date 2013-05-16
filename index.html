@@ -1,0 +1,44 @@
+<html>
+<head>
+	<title>Capture the flag</title>
+	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+	<meta name="viewport" content="width=device-width" />
+	<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+	<script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+	<script src="js/jquery.cookie.js"></script>
+	<script src="js/mongo.js"></script>
+	<script src="js/map.js"></script>
+	<script src="js/main.js"></script>
+	<style>
+	html, body {
+		font-family: Arial;
+		width: 100%;
+		height: 100%;
+		margin:0;
+	}
+	.overlay {
+		position:absolute;
+		z-index: 9999;
+		top:10%;
+		left:10%;
+		background: white;
+		opacity: 0.75;
+		padding:10px;
+		word-break:break-word;
+	}
+	#map {
+		width: 100%;
+		height: 100%;
+		position:relative;
+	}
+	</style>
+</head>
+<body>
+	<div class="overlay">
+		<h1>Capture the flag</h1>
+		<p class="result">Loading user data...</p>
+		<p class="coords">Loading location data...</p>
+	</div>
+	<div id="map"></div>
+</body>
+</html>
