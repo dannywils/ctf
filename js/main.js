@@ -28,29 +28,45 @@ $('document').ready(function () {
 			$('p.result').html('Username: '+data[0].username);
 			user = data[0];
 			showMap();
+			getUsers();
+			setInterval(getUsers,10000);
 		}
+
 	});
 
+
+	$('button').click(function(){
+		getUsers();
+	});
+	var map = new mapper();
+
+
+	function getUsers(){
+		db.select('users',{ "username": { "$ne" : user.username }},function(data){
+			console.log('data received');
+			//plot the other users
+			map.clear();
+			for (var i = data.length - 1; i >= 0; i--) {
+				map.geocodeUser(data[i]);
+			};
+			//plot yourself
+			map.geocodeUser(user, 'http://maps.google.com/mapfiles/ms/icons/green-dot.png');
+		});
+	}
 	function showMap(){
+		console.log('showmap called');
 		watchLocation(function (coords) {
-			var map = new mapper();
 			$('p.coords').html('Location: ' + coords.latitude + ',' + coords.longitude);
 			var locate = coords.latitude + ',' + coords.longitude;
 			//send your location to the server
 			db.update('users', user._id.$oid, { location: locate, date: new Date().toISOString() }, function(data){ console.log(data); });
 			//get the other users
-			db.select('users',{ "username": { "$ne" : user.username }},function(data){
-				//plot the other users
-				for (var i = data.length - 1; i >= 0; i--) {
-					map.geocodeUser(data[i]);
-				};
-				//plot yourself
-				user.location = locate;
-				map.geocodeUser(user, 'http://maps.google.com/mapfiles/ms/icons/green-dot.png');
-			});
+			user.location = locate;
+			getUsers();
 			console.log('Sent update to server.');
 		}, function () {
 			$('p.coords').html('error');
 		});
 	}
+
 });

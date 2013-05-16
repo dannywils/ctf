@@ -10,6 +10,14 @@ function mapper() {
 	});
 
 
+	var markers = [];
+
+	this.clear = function(){
+		for(var i=0; i < markers.length; i++){
+			markers[i].setMap(null);
+		}
+		markers = new Array();
+	};
 
 	this.geocodeUser = function (user, icon) {
 		var geocoder = new google.maps.Geocoder();
@@ -18,29 +26,30 @@ function mapper() {
 			'address': user.location
 		}, function (results, status) {
 			if (status == google.maps.GeocoderStatus.OK) {
-				map.setCenter(results[0].geometry.location);
+				//map.setCenter(results[0].geometry.location);
 				createMarker(results[0].geometry.location, user, icon);
 			} else {
 				alert('Geocode was not successful for the following reason: ' + status);
 			}
 		});
-	}
+	};
 
 	this.createMarker = function (latlng, user, icon) {
 		var marker = new google.maps.Marker({
 			map: map,
 			position: latlng,
 		});
+		markers.push(marker);
 		marker.setIcon(icon);
 		//add info window
 		google.maps.event.addListener(marker, 'click', function () {
-			infowindow.setContent(user.username);
+			infowindow.setContent(user.username + '<br>' + user.location);
 			infowindow.open(map, marker);
 		});
 
 		//end of adding info window
 		return marker;
-	}
+	};
 
 }
 
@@ -58,7 +67,7 @@ function watchLocation(successCallback, errorCallback) {
 			}
 			geolocation.watchPosition(handleSuccess, errorCallback, {
 				enableHighAccuracy: true,
-				maximumAge: 100 // 5 sec.
+				maximumAge: 0 // 5 sec.
 			});
 		} catch (err) {
 			errorCallback();
