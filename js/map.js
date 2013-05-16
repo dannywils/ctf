@@ -9,36 +9,32 @@ function mapper() {
 		size: new google.maps.Size(150, 50)
 	});
 
-	this.plotLocation = function (locations) {
-		for (var i = 0; i < locations.length; i++) {
-			this.geocodeAddress(locations[i], i);
-		}
-	}
 
-	this.geocodeAddress = function (location, i) {
+
+	this.geocodeUser = function (user, icon) {
 		var geocoder = new google.maps.Geocoder();
 		var createMarker = this.createMarker;
 		geocoder.geocode({
-			'address': location
+			'address': user.location
 		}, function (results, status) {
 			if (status == google.maps.GeocoderStatus.OK) {
 				map.setCenter(results[0].geometry.location);
-				createMarker(results[0].geometry.location, i);
+				createMarker(results[0].geometry.location, user, icon);
 			} else {
 				alert('Geocode was not successful for the following reason: ' + status);
 			}
 		});
 	}
 
-	this.createMarker = function (latlng, i) {
+	this.createMarker = function (latlng, user, icon) {
 		var marker = new google.maps.Marker({
 			map: map,
-			position: latlng
+			position: latlng,
 		});
-
+		marker.setIcon(icon);
 		//add info window
 		google.maps.event.addListener(marker, 'click', function () {
-			infowindow.setContent(locations[i]);
+			infowindow.setContent(user.username);
 			infowindow.open(map, marker);
 		});
 

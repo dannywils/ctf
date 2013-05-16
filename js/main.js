@@ -26,7 +26,7 @@ $('document').ready(function () {
 		//otherwise show the map
 		} else {
 			$('p.result').html('Username: '+data[0].username);
-			user = data;
+			user = data[0];
 			showMap();
 		}
 	});
@@ -35,17 +35,18 @@ $('document').ready(function () {
 		watchLocation(function (coords) {
 			var map = new mapper();
 			$('p.coords').html('Location: ' + coords.latitude + ',' + coords.longitude);
-			var locate = [coords.latitude + ',' + coords.longitude];
+			var locate = coords.latitude + ',' + coords.longitude;
 			//send your location to the server
-			db.update('users', user[0]._id.$oid, { location: locate[0], date: new Date().toISOString() }, function(data){ });
+			db.update('users', user._id.$oid, { location: locate, date: new Date().toISOString() }, function(data){ console.log(data); });
 			//get the other users
-			db.select('users',{ "username": { "$ne" : user[0].username }},function(data){
+			db.select('users',{ "username": { "$ne" : user.username }},function(data){
 				//plot the other users
 				for (var i = data.length - 1; i >= 0; i--) {
-					map.plotLocation([data[i].location]);
+					map.geocodeUser(data[i]);
 				};
 				//plot yourself
-				map.plotLocation(locate);
+				user.location = locate;
+				map.geocodeUser(user, 'http://maps.google.com/mapfiles/ms/icons/green-dot.png');
 			});
 			console.log('Sent update to server.');
 		}, function () {
