@@ -1,4 +1,5 @@
 var user = null;
+var lastUpdate = new Date(0).toISOString();
 $('document').ready(function () {
 
 	//create the data handler
@@ -31,8 +32,7 @@ $('document').ready(function () {
 			$('p.result').html('Username: ' + data[0].username);
 			user = data[0];
 			showMap();
-			getUsers();
-			setInterval(getUsers, 1000);
+			setInterval(getUsers, 2000);
 		}
 	});
 	//refresh on button press
@@ -48,9 +48,10 @@ $('document').ready(function () {
 				"$ne": user.username
 			}
 		}, function (data) {
-			console.log('data received');
-			//plot the other users
+			console.log('Data received.',data);
 			map.clear();
+			lastUpdate = new Date().toISOString();
+			//plot the other users
 			for (var i = data.length - 1; i >= 0; i--) {
 				map.geocodeUser(data[i]);
 			};
@@ -68,15 +69,13 @@ $('document').ready(function () {
 				location: locate,
 				date: new Date().toISOString()
 			}, function (data) {
-				console.log(data);
+				//console.log(data);
 			});
 			//get the other users
 			user.location = locate;
-			getUsers();
 			console.log('Sent update to server.');
 		}, function () {
 			$('p.coords').html('error');
 		});
 	}
-
 });
