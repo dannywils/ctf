@@ -42,11 +42,19 @@ $('document').ready(function () {
 	var map = new mapper();
 
 	function getUsers() {
+
+		//only show people who have been active within the last 10 minutes
+		//remove the ^10 to enforce
+		var timeout = new Date(new Date().getTime() - 600000^10).toISOString();
 		//select all users that are not you
 		db.select('users', {
 			"username": {
 				"$ne": user.username
+			},
+			"date": {
+				"$gt": timeout
 			}
+
 		}, function (data) {
 			console.log('Data received.',data);
 			map.clear();
@@ -73,6 +81,7 @@ $('document').ready(function () {
 			});
 			//get the other users
 			user.location = locate;
+			getUsers();
 			console.log('Sent update to server.');
 		}, function () {
 			$('p.coords').html('error');

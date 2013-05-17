@@ -8,7 +8,12 @@ function mapper() {
 		mapTypeControl: false,
 		scaleControl: false,
 		streetViewControl: false,
-		overviewMapControl: false
+		overviewMapControl: false,
+		scrollwheel: false,
+		navigationControl: false,
+		mapTypeControl: false,
+		scaleControl: false,
+		draggable: false,
 	});
 
 	var infowindow = new google.maps.InfoWindow({
