@@ -32,7 +32,7 @@ $('document').ready(function () {
 			user = data[0];
 			showMap();
 			getUsers();
-			setInterval(getUsers, 10000);
+			setInterval(getUsers, 1000);
 		}
 	});
 	//refresh on button press
