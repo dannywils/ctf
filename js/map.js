@@ -1,8 +1,19 @@
 function mapper() {
 	var map = new google.maps.Map(document.getElementById('map'), {
-		zoom: 19,
+		zoom: 25,
 		center: new google.maps.LatLng(44.648900999999995, -63.57533499999999),
-		mapTypeId: google.maps.MapTypeId.ROADMAP
+		mapTypeId: google.maps.MapTypeId.ROADMAP,
+		panControl: false,
+		zoomControl: false,
+		mapTypeControl: false,
+		scaleControl: false,
+		streetViewControl: false,
+		overviewMapControl: false,
+		scrollwheel: false,
+		navigationControl: false,
+		mapTypeControl: false,
+		scaleControl: false,
+		draggable: false,
 	});
 
 	var infowindow = new google.maps.InfoWindow({
@@ -20,18 +31,11 @@ function mapper() {
 	};
 
 	this.geocodeUser = function (user, icon) {
-		var geocoder = new google.maps.Geocoder();
-		var createMarker = this.createMarker;
-		geocoder.geocode({
-			'address': user.location
-		}, function (results, status) {
-			if (status == google.maps.GeocoderStatus.OK) {
-				//map.setCenter(results[0].geometry.location);
-				createMarker(results[0].geometry.location, user, icon);
-			} else {
-				alert('Geocode was not successful for the following reason: ' + status);
-			}
-		});
+		if(user.location != undefined){
+			var latlng = new google.maps.LatLng(user.location.split(",")[0],user.location.split(",")[1]);
+			//map.setCenter(latlng);
+			this.createMarker(latlng, user, icon);
+		}
 	};
 
 	this.createMarker = function (latlng, user, icon) {
@@ -43,7 +47,7 @@ function mapper() {
 		marker.setIcon(icon);
 		//add info window
 		google.maps.event.addListener(marker, 'click', function () {
-			infowindow.setContent(user.username + '<br>' + user.location);
+			infowindow.setContent('<strong>'+user.username + '</strong><br>' + user.location);
 			infowindow.open(map, marker);
 		});
 
