@@ -104,7 +104,7 @@ $('document').ready(function () {
 
 	function getUsers() {
 		//only show people who have been active within the last 10 minutes
-		var timeout = new Date(new Date().getTime() - 600000).toISOString();
+		var timeout = new Date(new Date().getTime() - 600000^10).toISOString();
 		//select all users that are not you
 		db.select('users', {
 			"date": {
