@@ -11,6 +11,7 @@ $('document').ready(function () {
 		username = prompt("Please enter your name", "Enter Name");
 		$.cookie('username', username, {expires: 1});
 		$.cookie('uuid', UUID(), {expires: 1});
+		uuid = $.cookie('uuid');
 	}
 
 	// check if the user exists in the database, if not insert them
