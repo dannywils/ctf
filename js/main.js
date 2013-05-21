@@ -97,10 +97,6 @@ $('document').ready(function () {
 		$(".team").html("You are on team "+user.team);
 		showMap();
 		//center the map on the user
-		if(user.location !== undefined){
-			var latlng = new google.maps.LatLng(user.location.split(",")[0],user.location.split(",")[1]);
-			map.center(latlng);
-		}
 		setInterval(getUsers, 2000);
 	}
 
@@ -146,20 +142,25 @@ $('document').ready(function () {
 	function showMap() {
 		watchLocation(function (coords) {
 			$('p.coords').html('Location: ' + coords.latitude + ',' + coords.longitude);
-			var locate = coords.latitude + ',' + coords.longitude;
+			user.location = coords.latitude + ',' + coords.longitude;
 			//send your location to the server
 			db.update('users', user._id.$oid, {
-				location: locate,
+				location: user.location,
 				date: new Date().toISOString()
 			}, function (data) {
-				//console.log(data);
+				console.log('Sent update to server.');
 			});
 			//get the other users
-			user.location = locate;
 			getUsers();
-			console.log('Sent update to server.');
+			//center on the user location
+			if(user.location !== undefined){
+				var latlng = new google.maps.LatLng(user.location.split(",")[0],user.location.split(",")[1]);
+				map.center(latlng);
+			}
 		}, function () {
 			$('p.coords').html('error');
+		},{
+			timeout:0
 		});
 	}
 
