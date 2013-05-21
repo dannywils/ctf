@@ -16,25 +16,80 @@ $('document').ready(function () {
 	}
 
 	// check if the user exists in the database, if not insert them
-	db.select("users", {
-		username: username
-	}, function (data) {
+	getUser(username, function (data) {
 		//if the user doesn't exists, add them and refresh
 		if (data.length == 0) {
-			db.insert("users", {
-				username: username,
-				team: 1
-			}, function (data) {
-				document.location = '';
-			});
-			//otherwise show the map
+			//check what team they should be on
+			getTeam(
+				function(team, captain){
+					db.insert("users", {
+						username: username,
+						team: team,
+						captain: captain
+					}, 
+						function(){
+							document.location = ''
+						}
+					);
+				}
+			);
+		//otherwise show the map
 		} else {
-			$('p.result').html('Username: ' + data[0].username);
-			user = data[0];
-			showMap();
-			setInterval(getUsers, 2000);
+			startGame(data);
 		}
-	});
+	});	
+
+
+
+	function getUser(username, callback){
+		db.select("users", {
+			username: username
+		}, 
+			callback
+		);
+	}
+
+	//will pass team to callback
+	function getTeam(callback){
+		console.log("getting teams");
+		db.select("users", {}, 
+			function(data){
+				var teams = [];
+				var captain = false;
+				teams[1] = 0;
+				teams[2] = 0;
+				for (var i = data.length - 1; i >= 0; i--) {
+					if(data[i].team === undefined){
+						continue;
+					}
+					var team = data[i].team;
+					if(team == 1){
+						teams[1]++;
+					} else if(team == 2){
+						teams[2]++;
+					}
+				};
+				// assign the user to the lowest team
+				var team = 1;
+				if(teams[1] > teams[2]) {
+					team = 2;
+				}
+				// if the user is the first on the team, make them a captain
+				if(teams[team] == 0){
+					captain = true;
+				}
+				callback(team, captain);
+			}
+		);
+	}
+
+	function startGame(data){
+		$('p.result').html('Username: ' + data[0].username);
+		user = data[0];
+		showMap();
+		//setInterval(getUsers, 2000);
+	}
+
 	//refresh on button press
 	$('button.getusers').click(function () {
 		getUsers();
