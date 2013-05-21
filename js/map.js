@@ -34,14 +34,17 @@ function mapper() {
 		map.setCenter(latlng);
 	}
 
-	this.geocodeUser = function (user, icon) {
+	this.geocodeUser = function (location, text, icon) {
+		if(text == undefined){
+			var text = '';
+		}
 		if(user.location != undefined){
-			var latlng = new google.maps.LatLng(user.location.split(",")[0],user.location.split(",")[1]);
-			this.createMarker(latlng, user, icon);
+			var latlng = new google.maps.LatLng(location.split(",")[0],location.split(",")[1]);
+			this.createMarker(latlng, text, icon);
 		}
 	};
 
-	this.createMarker = function (latlng, user, icon) {
+	this.createMarker = function (latlng, text, icon) {
 		var marker = new google.maps.Marker({
 			map: map,
 			position: latlng,
@@ -50,7 +53,7 @@ function mapper() {
 		marker.setIcon(icon);
 		//add info window
 		google.maps.event.addListener(marker, 'click', function () {
-			infowindow.setContent('<strong>'+user.username + '</strong><br>' + user.location);
+			infowindow.setContent('<strong>'+ text + '</strong><br>' + latlng.toString());
 			infowindow.open(map, marker);
 		});
 

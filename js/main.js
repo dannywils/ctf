@@ -24,7 +24,8 @@ $('document').ready(function () {
 					team: team,
 					uuid: uuid,
 					captain: captain,
-					date: new Date().toISOString()
+					date: new Date().toISOString(),
+					flag: null
 				}, function () {
 					//refresh after insert
 					document.location = '';
@@ -109,23 +110,35 @@ $('document').ready(function () {
 		var timeout = new Date(new Date().getTime() - 600000).toISOString();
 		//select all users that are not you
 		db.select('users', {
-			"uuid": {
-				"$ne": user.uuid
-			},
 			"date": {
 				"$gt": timeout
 			}
-
 		}, function (data) {
 			console.log('Data received.', data);
 			map.clear();
 			lastUpdate = new Date().toISOString();
 			//plot the other users
 			for (var i = data.length - 1; i >= 0; i--) {
-				map.geocodeUser(data[i]);
+				//if it is the current user
+				if(user._id.$oid == data[i]._id.$oid){
+					map.geocodeUser(user.location, 'You', 'http://maps.google.com/mapfiles/ms/icons/green-dot.png');
+				} else {
+					map.geocodeUser(data[i].location, data[i].username);
+				}
+				//if we have a flag
+				if(data[i].flag != null){
+					var flag = null;
+					if(data[i].team == 1){
+						flag = 'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png';
+					} else {
+						flag = 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png';
+					}
+					map.geocodeUser(data[i].flag, 'Flag '+ data[i].team, flag);
+				}
+				//map the user
+
 			};
-			//plot yourself
-			map.geocodeUser(user, 'http://maps.google.com/mapfiles/ms/icons/green-dot.png');
+
 		});
 	}
 
@@ -154,7 +167,12 @@ $('document').ready(function () {
 		console.debug('Capture flag attempted');
 	});
 	$('button.placeflag').click(function () {
-		console.debug('Place the flag');
+		db.update('users', user._id.$oid, {
+				flag: user.location
+			}, function (data) {
+				console.log('Placed flag',data);
+				$('button.placeflag').attr("disabled", true);
+		});
 	});
 
 });
