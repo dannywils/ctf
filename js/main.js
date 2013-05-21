@@ -89,12 +89,17 @@ $('document').ready(function () {
 	function startGame(data) {
 		$('p.result').html('Username: ' + data[0].username);
 		user = data[0];
+		//if the user is a captain, show the captain menu
 		if (user.captain) {
 			$('.captain').show();
 		}
-		//check if there is a captain
+		//if the flag has been set, hide the place button
+		if(user.flag != null){
+			$('.captain button').hide();
+		}
 		$('.player').show();
-		$(".team").html("You are on team "+user.team);
+		$(".team").html("You are on team " + user.team);
+		//show the map
 		showMap();
 		//center the map on the user
 		setInterval(getUsers, 2000);
