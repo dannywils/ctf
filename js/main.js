@@ -114,26 +114,19 @@ $('document').ready(function () {
 			console.log('Data received.', data);
 			map.clear();
 			lastUpdate = new Date().toISOString();
+			var flag = ['red','blu'];
 			//plot the other users
 			for (var i = data.length - 1; i >= 0; i--) {
 				//if it is the current user
 				if(user._id.$oid == data[i]._id.$oid){
-					map.geocodeUser(user.location, 'You', 'http://maps.google.com/mapfiles/ms/icons/green-dot.png');
+					map.geocodeUser(user.location, 'You', 'http://maps.google.com/mapfiles/kml/paddle/grn-diamond.png');
 				} else {
-					map.geocodeUser(data[i].location, data[i].username);
+					map.geocodeUser(data[i].location, data[i].username, 'http://maps.google.com/mapfiles/kml/paddle/'+flag[data[i].team-1]+'-blank.png');
 				}
 				//if we have a flag
 				if(data[i].flag != null){
-					var flag = null;
-					if(data[i].team == 1){
-						flag = 'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png';
-					} else {
-						flag = 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png';
-					}
-					map.geocodeUser(data[i].flag, 'Flag '+ data[i].team, flag);
+					map.geocodeUser(data[i].flag, 'Flag '+ data[i].team, 'http://maps.google.com/mapfiles/kml/paddle/'+flag[data[i].team-1]+'-stars.png');
 				}
-				//map the user
-
 			};
 
 		});
