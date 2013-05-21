@@ -9,11 +9,11 @@ function mapper() {
 		scaleControl: false,
 		streetViewControl: false,
 		overviewMapControl: false,
-		scrollwheel: false,
+		scrollwheel: true,
 		navigationControl: false,
 		mapTypeControl: false,
-		scaleControl: false,
-		draggable: false,
+		scaleControl: true,
+		draggable: true,
 	});
 
 	var infowindow = new google.maps.InfoWindow({
@@ -30,10 +30,13 @@ function mapper() {
 		markers = new Array();
 	};
 
+	this.center = function(latlng){
+		map.setCenter(latlng);
+	}
+
 	this.geocodeUser = function (user, icon) {
 		if(user.location != undefined){
 			var latlng = new google.maps.LatLng(user.location.split(",")[0],user.location.split(",")[1]);
-			//map.setCenter(latlng);
 			this.createMarker(latlng, user, icon);
 		}
 	};

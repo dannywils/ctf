@@ -8,6 +8,7 @@
 	<script src="http://maps.google.com/maps/api/js?sensor=false"></script>
 	<script src="js/jquery.cookie.js"></script>
 	<script src="js/mongo.js"></script>
+	<script src="js/helpers.js"></script>
 	<script src="js/map.js"></script>
 	<script src="js/main.js"></script>
 	<link rel="stylesheet" href="css/style.css"/>
@@ -17,7 +18,15 @@
 		<h1>Capture the flag</h1>
 		<p class="result">Loading user data...</p>
 		<p class="coords">Loading location data...</p>
-		<button class="getusers">Get users</button>
+		<p class="team">Loading team data...</p>
+		<span class="captain">
+			You are the captain!<br/>
+			<button class="placeflag">Place Flag</button>
+		</span>
+		<span class="player">
+			<button class="captureflag">Capture Flag</button>
+		</span>
+		<!--  <button class="getusers">Get users</button> -->
 	</div>
 	<div id="map"></div>
 </body>
