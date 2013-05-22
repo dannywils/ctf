@@ -122,18 +122,18 @@ $('document').ready(function () {
 			var flag = ['red','blu'];
 			//plot the other users
 			for (var i = data.length - 1; i >= 0; i--) {
-				//if it is the current user
+				//if it is the current user, plot with a diamond
 				if(user._id.$oid == data[i]._id.$oid){
-					map.geocodeUser(user.location, 'You', 'http://maps.google.com/mapfiles/kml/paddle/grn-diamond.png');
+					map.geocodeUser(user.location, 'You', 'http://maps.google.com/mapfiles/kml/paddle/'+flag[data[i].team-1]+'-diamond.png');
 				} else {
+					//plot other players with blank markers
 					map.geocodeUser(data[i].location, data[i].username, 'http://maps.google.com/mapfiles/kml/paddle/'+flag[data[i].team-1]+'-blank.png');
 				}
-				//if we have a flag
+				//if we have a flag, plot it with a star
 				if(data[i].flag != null){
 					map.geocodeUser(data[i].flag, 'Flag '+ data[i].team, 'http://maps.google.com/mapfiles/kml/paddle/'+flag[data[i].team-1]+'-stars.png');
 				}
 			};
-
 		});
 	}
 
