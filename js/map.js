@@ -38,7 +38,7 @@ function mapper() {
 		if(text == undefined){
 			var text = '';
 		}
-		if(user.location != undefined){
+		if(location != undefined){
 			var latlng = new google.maps.LatLng(location.split(",")[0],location.split(",")[1]);
 			this.createMarker(latlng, text, icon);
 		}
