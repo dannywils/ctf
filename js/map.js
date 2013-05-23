@@ -39,10 +39,24 @@ function mapper() {
 			var text = '';
 		}
 		if(location != undefined){
-			var latlng = new google.maps.LatLng(location.split(",")[0],location.split(",")[1]);
-			this.createMarker(latlng, text, icon);
+			this.createMarker(strToLat(location), text, icon);
 		}
 	};
+
+	this.createCircle = function(location, color){
+		var options = {
+			strokeColor: color,
+			strokeOpacity: 0.8,
+			strokeWeight: 2,
+			fillColor: color,
+			fillOpacity: 0.35,
+			map: map,
+			center: strToLat(location),
+			radius: 5
+		};
+		var circle = new google.maps.Circle(options);
+		markers.push(circle);
+	}
 
 	this.createMarker = function (latlng, text, icon) {
 		var marker = new google.maps.Marker({

@@ -6,3 +6,7 @@ function UUID(){
 		return v.toString(16);
 	});
 }
+// convert comma seperated gps location to google maps LatLng
+function strToLat(location){
+	return new google.maps.LatLng(location.split(",")[0],location.split(",")[1]);
+}
