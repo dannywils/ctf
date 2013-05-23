@@ -32,7 +32,6 @@ $('document').ready(function () {
 					uuid: uuid,
 					captain: captain,
 					date: new Date().toISOString(),
-					flag: null
 				}, function () {
 					//refresh after insert
 					document.location = '';
@@ -137,7 +136,7 @@ $('document').ready(function () {
 					map.placeMarker(user.uuid, user.location, 'You', 'http://maps.google.com/mapfiles/kml/paddle/' + colors[users[i].team - 1] + '-diamond.png');
 				} else {
 					//plot other players with blank markers
-					map.placeMarker(user.uuid, users[i].location, users[i].username, 'http://maps.google.com/mapfiles/kml/paddle/' + colors[users[i].team - 1] + '-blank.png');
+					map.placeMarker(users[i].uuid, users[i].location, users[i].username, 'http://maps.google.com/mapfiles/kml/paddle/' + colors[users[i].team - 1] + '-blank.png');
 				}
 			};
 		});

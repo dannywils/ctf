@@ -38,6 +38,7 @@ function mapper() {
 		}
 		if(location !== undefined){
 			var latlng = strToLat(location);
+
 			var marker = markers[uuid];
 			//if there is no marker, place one
 			if(marker === undefined){
@@ -46,13 +47,29 @@ function mapper() {
 			} 
 			// if the location has changed, clear the marker and create a new one
 			if(!marker.getPosition().equals(latlng)){
-				console.debug('position changed',marker.getPosition(),latlng);
 				marker.setMap(null);
 				this.createMarker(uuid, latlng, text, icon);
 			} else {
 				console.debug('unchanged');
 			}
 		}
+	};
+
+	this.createMarker = function (uuid, latlng, text, icon) {
+		var marker = new google.maps.Marker({
+			map: map,
+			position: latlng,
+		});
+		marker.setIcon(icon);
+		markers[uuid] = marker;
+		//add info window
+		google.maps.event.addListener(marker, 'click', function () {
+			infowindow.setContent('<strong>'+ text + '</strong><br>' + latlng.toString());
+			infowindow.open(map, marker);
+		});
+
+		//end of adding info window
+		return marker;
 	};
 
 	this.placeCircle = function(uuid, center, color){
@@ -64,7 +81,6 @@ function mapper() {
 		} 
 		// if the location has changed, clear the marker and create a new one
 		if(!circle.getCenter().equals(latlng)){
-			console.debug('circle changed',circle.getCenter(), latlng);
 			circle.setMap(null)
 			this.createCircle(uuid, latlng, color);
 		}
@@ -84,24 +100,6 @@ function mapper() {
 		var circle = new google.maps.Circle(options);
 		circles[uuid] = circle;
 	}
-
-	this.createMarker = function (uuid, latlng, text, icon) {
-		var marker = new google.maps.Marker({
-			map: map,
-			position: latlng,
-		});
-		marker.setIcon(icon);
-		markers[uuid] = marker;
-		//add info window
-		google.maps.event.addListener(marker, 'click', function () {
-			infowindow.setContent('<strong>'+ text + '</strong><br>' + latlng.toString());
-			infowindow.open(map, marker);
-		});
-
-		//end of adding info window
-		return marker;
-	};
-
 }
 
 function watchLocation(successCallback, errorCallback) {
