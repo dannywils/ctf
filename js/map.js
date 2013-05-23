@@ -1,3 +1,4 @@
+var markers = [], circles = [];
 function mapper() {
 	var map = new google.maps.Map(document.getElementById('map'), {
 		zoom: 25,
@@ -20,9 +21,6 @@ function mapper() {
 		size: new google.maps.Size(150, 50)
 	});
 
-
-	var markers = [];
-
 	this.clear = function(){
 		for(var i=0; i < markers.length; i++){
 			markers[i].setMap(null);
@@ -32,18 +30,47 @@ function mapper() {
 
 	this.center = function(latlng){
 		map.setCenter(latlng);
-	}
+	};
 
-	this.geocodeUser = function (location, text, icon) {
-		if(text == undefined){
+	this.placeMarker = function (uuid, location, text, icon) {
+		if(text === undefined){
 			var text = '';
 		}
-		if(location != undefined){
-			this.createMarker(strToLat(location), text, icon);
+		if(location !== undefined){
+			var latlng = strToLat(location);
+			var marker = markers[uuid];
+			//if there is no marker, place one
+			if(marker === undefined){
+				this.createMarker(uuid, latlng, text, icon);
+				return;
+			} 
+			// if the location has changed, clear the marker and create a new one
+			if(!marker.getPosition().equals(latlng)){
+				console.debug('position changed',marker.getPosition(),latlng);
+				marker.setMap(null);
+				this.createMarker(uuid, latlng, text, icon);
+			} else {
+				console.debug('unchanged');
+			}
 		}
 	};
 
-	this.createCircle = function(location, color){
+	this.placeCircle = function(uuid, center, color){
+		var latlng = strToLat(center);
+		var circle = circles[uuid];
+		if(circle === undefined){
+			this.createCircle(uuid, latlng, color);
+			return;
+		} 
+		// if the location has changed, clear the marker and create a new one
+		if(!circle.getCenter().equals(latlng)){
+			console.debug('circle changed',circle.getCenter(), latlng);
+			circle.setMap(null)
+			this.createCircle(uuid, latlng, color);
+		}
+	};
+
+	this.createCircle = function(uuid, latlng, color){
 		var options = {
 			strokeColor: color,
 			strokeOpacity: 0.8,
@@ -51,20 +78,20 @@ function mapper() {
 			fillColor: color,
 			fillOpacity: 0.35,
 			map: map,
-			center: strToLat(location),
+			center: latlng,
 			radius: 5
 		};
 		var circle = new google.maps.Circle(options);
-		markers.push(circle);
+		circles[uuid] = circle;
 	}
 
-	this.createMarker = function (latlng, text, icon) {
+	this.createMarker = function (uuid, latlng, text, icon) {
 		var marker = new google.maps.Marker({
 			map: map,
 			position: latlng,
 		});
-		markers.push(marker);
 		marker.setIcon(icon);
+		markers[uuid] = marker;
 		//add info window
 		google.maps.event.addListener(marker, 'click', function () {
 			infowindow.setContent('<strong>'+ text + '</strong><br>' + latlng.toString());

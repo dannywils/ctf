@@ -112,7 +112,6 @@ $('document').ready(function () {
 	}
 
 	function refresh(){
-		map.clear();
 		getUsers();
 		getFlags();
 	}
@@ -135,12 +134,11 @@ $('document').ready(function () {
 			for (var i = users.length - 1; i >= 0; i--) {
 				//if it is the current user, plot with a diamond
 				if (user._id.$oid == users[i]._id.$oid) {
-					map.geocodeUser(user.location, 'You', 'http://maps.google.com/mapfiles/kml/paddle/' + colors[users[i].team - 1] + '-diamond.png');
+					map.placeMarker(user.uuid, user.location, 'You', 'http://maps.google.com/mapfiles/kml/paddle/' + colors[users[i].team - 1] + '-diamond.png');
 				} else {
 					//plot other players with blank markers
-					map.geocodeUser(users[i].location, users[i].username, 'http://maps.google.com/mapfiles/kml/paddle/' + colors[users[i].team - 1] + '-blank.png');
+					map.placeMarker(user.uuid, users[i].location, users[i].username, 'http://maps.google.com/mapfiles/kml/paddle/' + colors[users[i].team - 1] + '-blank.png');
 				}
-
 			};
 		});
 	}
@@ -155,15 +153,14 @@ $('document').ready(function () {
 			console.log('flags received', flags);
 			for (var i = flags.length - 1; i >= 0; i--) {
 				//if(!bases[flags[i].team - 1]){
-					map.geocodeUser(flags[i].flag, 'Flag ' + flags[i].team, 'http://maps.google.com/mapfiles/kml/paddle/' + colors[flags[i].team - 1] + '-stars.png');
-					map.createCircle(flags[i].base, colors[flags[i].team - 1]);
+					map.placeMarker(flags[i].uuid, flags[i].flag, 'Flag ' + flags[i].team, 'http://maps.google.com/mapfiles/kml/paddle/' + colors[flags[i].team - 1] + '-stars.png');
+					map.placeCircle(flags[i].uuid, flags[i].base, colors[flags[i].team - 1]);
 					bases[flags[i].team - 1] = true;
 				//}
 			
 			}
 		});
 	}
-
 
 	function showMap() {
 		watchLocation(function (coords) {
@@ -194,7 +191,9 @@ $('document').ready(function () {
 		db.insert('flags', {
 			flag: user.location,
 			base: user.location,
-			team: user.team
+			team: user.team,
+			uuid: UUID(),
+			date: new Date().toISOString()
 		}, function (data) {
 			console.log('Placed flag', data);
 			$('button.placeflag').attr("disabled", true);
