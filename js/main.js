@@ -111,8 +111,9 @@ $('document').ready(function () {
 	}
 
 	function refresh(){
-		getUsers();
 		getFlags();
+		getUsers();
+
 	}
 
 	var map = new mapper();
@@ -174,6 +175,7 @@ $('document').ready(function () {
 			});
 			//get the other users
 			refresh();
+		
 			//center on the user location
 			if (user.location !== undefined) {
 				var latlng = new google.maps.LatLng(user.location.split(",")[0], user.location.split(",")[1]);
