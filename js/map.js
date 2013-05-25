@@ -53,15 +53,21 @@ function mapper() {
 				marker.setMap(null);
 				this.createMarker(uuid, latlng, text, icon);
 			} else {
-				console.debug('unchanged');
+				//console.debug('unchanged');
 			}
 		}
 	};
 
 	this.createMarker = function (uuid, latlng, text, icon) {
+		var zindex = 0;
+		//current user is always on top
+		if(uuid == user.uuid){
+			zindex = 1;
+		}
 		var marker = new google.maps.Marker({
 			map: map,
 			position: latlng,
+			zIndex: zindex
 		});
 		marker.setIcon(icon);
 		markers[uuid] = marker;

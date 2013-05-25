@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Capture the flag</title>
+	<title>Capture the Flag</title>
 	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
 	<meta name="viewport" content="width=device-width" />
 	<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
@@ -12,17 +12,38 @@
 	<script src="js/map.js"></script>
 	<script src="js/main.js"></script>
 	<link rel="stylesheet" href="css/style.css"/>
+	<link href="//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.min.css" rel="stylesheet">
 </head>
 <body>
 	<div class="overlay">
-		<h1>Capture the flag</h1>
-		<p class="result">Loading user data...</p>
-		<p class="coords">Loading location data...</p>
-		<p class="team">Loading team data...</p>
+		<h1><span class="icon-stack">
+			<i class="icon-circle icon-stack-base"></i>
+			<i class="icon-flag icon-light"></i>
+		</span> Capture the Flag</h1>
+		<p>
+			<span class="icon">
+				<i class="icon-user"></i>
+			</span>
+			<span class="result"> Loading user data... <i class="icon-spinner icon-spin icon-large"></i></span>
+		</p>
+		<p>
+			<span class="icon">
+				<i class="icon-map-marker"></i>
+			</span>
+			<span class="coords"> Loading location data... <i class="icon-spinner icon-spin icon-large"></i></span>
+		</p>
+		<p>
+			<span class="icon">
+				<i class="icon-group"></i>
+			</span>
+			<span class="team"> Loading team data... <i class="icon-spinner icon-spin icon-large"></i></span>
+		</p>
+		<!-- Captain -->
 		<span class="captain">
 			You are the captain!<br/>
 			<button class="placeflag">Place Flag</button>
 		</span>
+		<!-- Player -->
 		<span class="player">
 			<button class="captureflag">Capture Flag</button>
 		</span>

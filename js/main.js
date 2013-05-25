@@ -10,7 +10,9 @@ $('document').ready(function () {
 	var uuid = $.cookie('uuid');
 
 	if (username === undefined || uuid === undefined) {
-		username = prompt("Please enter your name", "Enter Name");
+		while(username === undefined || username == null){
+			username = prompt("Please enter your name", "Enter Name");
+		}
 		$.cookie('username', username, {
 			expires: 1
 		});
@@ -92,18 +94,15 @@ $('document').ready(function () {
 	}
 
 	function startGame(data) {
-		$('p.result').html('Username: ' + data[0].username);
+		$('.result').html(data[0].username);
 		user = data[0];
 		//if the user is a captain, show the captain menu
 		if (user.captain) {
 			$('.captain').show();
 		}
-		//if the flag has been set, hide the place button
-		if (user.flag != null) {
-			$('.captain button').hide();
-		}
 		$('.player').show();
-		$(".team").html("You are on team " + user.team);
+		$(".team").html("Team " + user.team);
+		$(".overlay").addClass('team'+user.team);
 		//show the map
 		showMap();
 		//refresh every two seconds
@@ -113,7 +112,15 @@ $('document').ready(function () {
 	function refresh(){
 		getFlags();
 		getUsers();
-
+	}
+	function checkBase(){
+		var otherteam = user.team == 1 ? 2 : 1;
+		if(inBase(otherteam)){
+			//alert('in base!');
+			$('.captureflag').css('visibility','visible');
+		} else {
+			$('.captureflag').css('visibility','hidden');
+		}
 	}
 
 	var map = new mapper();
@@ -126,20 +133,19 @@ $('document').ready(function () {
 		db.select('users', {
 			"date": {
 				"$gt": timeout
+			},
+			"uuid": {
+				"$ne": user.uuid
 			}
 		}, function (users) {
-			console.log('users received.', users);
-			lastUpdate = new Date().toISOString();
+			//console.log('users received.', users);
 			//plot the other users
 			for (var i = users.length - 1; i >= 0; i--) {
-				//if it is the current user, plot with a diamond
-				if (user._id.$oid == users[i]._id.$oid) {
-					map.placeMarker(user.uuid, user.location, 'You', 'http://maps.google.com/mapfiles/kml/paddle/' + colors[users[i].team - 1] + '-diamond.png');
-				} else {
-					//plot other players with blank markers
-					map.placeMarker(users[i].uuid, users[i].location, users[i].username, 'http://maps.google.com/mapfiles/kml/paddle/' + colors[users[i].team - 1] + '-blank.png');
-				}
+				//plot other players with blank markers
+				map.placeMarker(users[i].uuid, users[i].location, users[i].username, 'http://maps.google.com/mapfiles/kml/paddle/' + colors[users[i].team - 1] + '-blank.png');
 			};
+			//if it is the current user, plot with a diamond
+			map.placeMarker(user.uuid, user.location, 'You ('+user.username+')', 'http://maps.google.com/mapfiles/kml/paddle/' + colors[user.team - 1] + '-diamond.png');
 		});
 	}
 
@@ -150,39 +156,41 @@ $('document').ready(function () {
 				"$gt": 0
 			}
 		}, function (flags) {
-			console.log('flags received', flags);
+			//console.log('flags received', flags);
 			for (var i = flags.length - 1; i >= 0; i--) {
-				//if(!bases[flags[i].team - 1]){
-					map.placeMarker(flags[i].uuid, flags[i].flag, 'Flag ' + flags[i].team, 'http://maps.google.com/mapfiles/kml/paddle/' + colors[flags[i].team - 1] + '-stars.png');
-					map.placeCircle(flags[i].uuid, flags[i].base, colors[flags[i].team - 1]);
-					bases[flags[i].team - 1] = true;
-				//}
-			
+				map.placeMarker(flags[i].uuid, flags[i].flag, 'Flag ' + flags[i].team, 'http://maps.google.com/mapfiles/kml/paddle/' + colors[flags[i].team - 1] + '-stars.png');
+				map.placeCircle(flags[i].team, flags[i].base, colors[flags[i].team - 1]);
+				bases[flags[i].team - 1] = true;
 			}
+			//if the flag has been set, hide the place button
+			if(bases[user.team - 1]){
+				$('.placeflag').hide();
+			}
+			checkBase();
 		});
 	}
 
 	function showMap() {
 		watchLocation(function (coords) {
-			$('p.coords').html('Location: ' + coords.latitude + ',' + coords.longitude);
+			$('.coords').html(coords.latitude + ',' + coords.longitude);
 			user.location = coords.latitude + ',' + coords.longitude;
 			//send your location to the server
 			db.update('users', user._id.$oid, {
 				location: user.location,
 				date: new Date().toISOString()
 			}, function (data) {
-				console.log('Sent update to server.');
+				//console.log('Sent update to server.');
 			});
 			//get the other users
 			refresh();
-		
+
 			//center on the user location
 			if (user.location !== undefined) {
 				var latlng = new google.maps.LatLng(user.location.split(",")[0], user.location.split(",")[1]);
 				map.center(latlng);
 			}
 		}, function () {
-			$('p.coords').html('error');
+			$('.coords').html('error');
 		}, {
 			timeout: 0
 		});
@@ -196,9 +204,23 @@ $('document').ready(function () {
 			uuid: UUID(),
 			date: new Date().toISOString()
 		}, function (data) {
-			console.log('Placed flag', data);
-			$('button.placeflag').attr("disabled", true);
+			$('button.placeflag').hide();
 		});
+	}
+
+	function inBase(team){
+		var latlng = strToLat(user.location);
+		var base;
+		for (var key in circles) {
+		  if(key == team){
+			base = circles[key];
+		  }
+		}
+		if(base !== undefined){
+			var bounds = base.getBounds();
+			return bounds.contains(latlng);
+		}
+		return false;
 	}
 
 	//refresh on button press
@@ -208,5 +230,5 @@ $('document').ready(function () {
 	$('button.placeflag').click(function () {
 		placeFlag();
 	});
-
 });
+
