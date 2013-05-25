@@ -11,6 +11,7 @@
 	<script src="js/helpers.js"></script>
 	<script src="js/map.js"></script>
 	<script src="js/main.js"></script>
+	<script src="js/events.js"></script>
 	<link rel="stylesheet" href="css/style.css"/>
 	<link href="//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.min.css" rel="stylesheet">
 </head>
@@ -38,6 +39,12 @@
 			</span>
 			<span class="team"> Loading team data... <i class="icon-spinner icon-spin icon-large"></i></span>
 		</p>
+				<span class="score">
+			<span data-team="1" class="team1">0</span> - <span data-team="2" class="team2">0</span>
+		</span>
+		<span class="message">
+			Return to your base!
+		</span>
 		<!-- Captain -->
 		<span class="captain">
 			You are the captain!<br/>
@@ -47,6 +54,7 @@
 		<span class="player">
 			<button class="captureflag">Capture Flag</button>
 		</span>
+
 		<!--  <button class="getusers">Get users</button> -->
 	</div>
 	<div id="map"></div>

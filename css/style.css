@@ -32,8 +32,12 @@ html, body {
 	height: 100%;
 	position:relative;
 }
-.captain, .player {
+.captain, .player, .message {
 	display:none;
+}
+.message, .score {
+	font-size:4em;
+	font-weight: bold;
 }
 span.icon {
 	width:25px;

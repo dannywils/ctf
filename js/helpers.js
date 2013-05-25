@@ -10,3 +10,7 @@ function UUID(){
 function strToLat(location){
 	return new google.maps.LatLng(location.split(",")[0],location.split(",")[1]);
 }
+
+function otherTeam(team){
+	return otherteam = team == 1 ? 2 : 1;
+}

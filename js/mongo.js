@@ -28,15 +28,15 @@ function mongolab(){
 		});
 	}
 
-	this.update = function(collection, id, update, callback){
+	this.update = function(collection, query, update, callback){
 		var result;
 		$.ajax({
-			url: 'https://api.mongolab.com/api/1/databases/'+DATABASE+'/collections/'+collection+'?apiKey=' + API_KEY + '&q={"_id":{ "$oid":"'+ id +'"}}',
+			url: 'https://api.mongolab.com/api/1/databases/'+DATABASE+'/collections/'+collection+'?apiKey=' + API_KEY + '&q='+JSON.stringify(query),
 			data: JSON.stringify( { "$set" : update } ),
 			type: "PUT",
 			contentType: "application/json",
 			success: function (data) {
-				callback(data);
+				callback === undefined || callback(data);
 			},
 		});
 	}
