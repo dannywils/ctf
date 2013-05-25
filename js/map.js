@@ -2,6 +2,7 @@ var markers = [],
 	circles = [];
 
 function mapper() {
+	google.maps.visualRefresh = true;
 	var map = new google.maps.Map(document.getElementById('map'), {
 		zoom: 25,
 		center: new google.maps.LatLng(44.648900999999995, -63.57533499999999),
@@ -16,22 +17,7 @@ function mapper() {
 		navigationControl: false,
 		mapTypeControl: false,
 		scaleControl: true,
-		draggable: true,
-		styles: [{
-				"stylers": [{
-						"saturation": 100
-					}, {
-						"visibility": "simplified"
-					}, {
-						"gamma": 0.50
-					}, {
-						"invert_lightness": true
-					}, {
-						"hue": "#22ff00"
-					}
-				]
-			}
-		]
+		draggable: true
 	});
 
 	var infowindow = new google.maps.InfoWindow({
