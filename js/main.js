@@ -112,6 +112,9 @@ $('document').ready(function () {
 	function refresh(){
 		getFlags();
 		getUsers();
+		if(navigator.vibrate !== undefined){
+			navigator.vibrate(10000);
+		}
 	}
 
 	function checkBase(){
