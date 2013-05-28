@@ -41,7 +41,7 @@ input, button {
 	display:none;
 }
 .message, .score {
-	font-size:4em;
+	font-size:1.5em;
 	font-weight: bold;
 }
 span.icon {

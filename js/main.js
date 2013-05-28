@@ -114,7 +114,6 @@ $('document').ready(function () {
 		getUsers();
 	}
 
-
 	function checkBase(){
 		var otherteam = otherTeam(user.team);
 		if(inBase(otherteam)){
@@ -128,6 +127,7 @@ $('document').ready(function () {
 	}
 
 	function score(){
+		user.hasflag = false;
 		db.select('teams',{ team: user.team }, function(data){
 			db.update('teams',{ team: user.team }, { pickedup: false, score: data[0].score + 1 });
 		});
