@@ -14,15 +14,20 @@ html, body {
 	background-color:rgba(255,255,255,0.5);
 	padding:5px;
 	word-break:break-word;
+	pointer-events:none;
+
+}
+input, button {
+	pointer-events:auto;
 }
 .team1 {
-	background-color:rgba(255,0,0,0.5);
+	background-color:rgba(255,0,0,0.2);
 }
 .team1 .icon-flag{
 	color:red;
 }
 .team2 {
-	background-color:rgba(0,0,255,0.5);
+	background-color:rgba(0,0,255,0.2);
 }
 .team2 .icon-flag{
 	color:blue;
