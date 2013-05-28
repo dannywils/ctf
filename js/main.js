@@ -112,7 +112,7 @@ $('document').ready(function () {
 	function refresh(){
 		getFlags();
 		getUsers();
-		if(navigator.vibrate !== undefined){
+		if("vibrate" in navigator;){
 			navigator.vibrate(10000);
 		}
 	}
