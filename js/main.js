@@ -116,7 +116,7 @@ $('document').ready(function () {
 
 	function checkBase(){
 		var otherteam = otherTeam(user.team);
-		if(inBase(otherteam)){
+		if(inBase(otherteam) && !user.hasflag){
 			$('.captureflag').css('visibility','visible');
 		} else {
 			$('.captureflag').css('visibility','hidden');

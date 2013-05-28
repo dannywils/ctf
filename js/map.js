@@ -104,7 +104,7 @@ function mapper() {
 			fillOpacity: 0.35,
 			map: map,
 			center: latlng,
-			radius: 5
+			radius: 10
 		};
 		var circle = new google.maps.Circle(options);
 		circles[uuid] = circle;
