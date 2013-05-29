@@ -32,11 +32,12 @@ $('document').ready(function () {
 			"date": {
 				"$gt": timeout
 			}
-		}, function (data,username,uuid) {
+		}, function (data) {
 		//if the user doesn't exists, add them and refresh
 		if (data.length == 0) {
 			//check what team they should be on
 			whichTeam(function (team, captain) {
+				alert(team,captain);
 				db.insert("users", {
 					username: username,
 					team: team,
@@ -56,7 +57,6 @@ $('document').ready(function () {
 
 	//will pass team to handler
 	function whichTeam(handler) {
-		console.log("getting teams");
 		db.select("users", {}, function (users) {
 			var teams = [];
 			var captain = false;
@@ -88,16 +88,15 @@ $('document').ready(function () {
 	}
 
 	function startGame(data) {
-		$('.result').html(data[0].username);
 		user = data[0];
-		console.log(data);
+		$('.result').html(user.username);
 		//if the data is a captain, show the captain menu
-		if (data.captain) {
+		if (user.captain) {
 			$('.captain').show();
 		}
 		$('.player').show();
-		$(".team").html("Team " + data.team);
-		$(".overlay").addClass('team'+data.team);
+		$(".team").html("Team " + user.team);
+		$(".overlay").addClass('team'+user.team);
 		//show the map
 		showMap();
 		//refresh every x seconds
@@ -143,7 +142,6 @@ $('document').ready(function () {
 				"$gt": timeout
 			}
 		}, function (users) {
-			//console.log('users received.', users);
 			//plot the other users
 			for (var i = users.length - 1; i >= 0; i--) {
 				//plot other players with blank markers
@@ -161,7 +159,6 @@ $('document').ready(function () {
 	//get flag and base locations
 	function getFlags() {
 		db.select('teams', {}, function (teams) {
-			//console.log('flags received', flags);
 			for (var i = teams.length - 1; i >= 0; i--) {
 				var team = teams[i];
 				//hide the flag if it's been picked up
