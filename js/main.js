@@ -1,6 +1,7 @@
 //global user variable
 var user = null;
-var colors = ['red', 'blu'];
+var flagcolors = ['red', 'blu'];
+var basecolors = ['red', 'blue'];
 var bases = [false, false];
 var db;
 $('document').ready(function () {
@@ -9,7 +10,7 @@ $('document').ready(function () {
 	//check if the player has a cookie
 	var username = $.cookie('username');
 	var uuid = $.cookie('uuid');
-
+	//if they are not signed in, prompt for a username
 	if (username === undefined || uuid === undefined) {
 		while(username === undefined || username == null){
 			username = prompt("Please enter your name", "Enter Name");
@@ -24,11 +25,18 @@ $('document').ready(function () {
 	}
 
 	// check if the user exists in the database, if not insert them
-	prepareUser(username, uuid, function (data) {
+	var timeout = new Date(new Date().getTime() - 600000).toISOString();
+		db.select("users", {
+			username: username,
+			uuid: uuid,
+			"date": {
+				"$gt": timeout
+			}
+		}, function (data,username,uuid) {
 		//if the user doesn't exists, add them and refresh
 		if (data.length == 0) {
 			//check what team they should be on
-			getTeam(function (team, captain) {
+			whichTeam(function (team, captain) {
 				db.insert("users", {
 					username: username,
 					team: team,
@@ -40,40 +48,25 @@ $('document').ready(function () {
 					document.location = '';
 				});
 			});
-			//otherwise show the map
+		//otherwise start the game
 		} else {
 			startGame(data);
 		}
 	});
 
-
-	//check if the user exists and is active
-
-	function prepareUser(username, uuid, callback) {
-		var timeout = new Date(new Date().getTime() - 600000).toISOString();
-		db.select("users", {
-			username: username,
-			uuid: uuid,
-			"date": {
-				"$gt": timeout
-			}
-		},
-		callback);
-	}
-
-	//will pass team to callback
-	function getTeam(callback) {
+	//will pass team to handler
+	function whichTeam(handler) {
 		console.log("getting teams");
-		db.select("users", {}, function (data) {
+		db.select("users", {}, function (users) {
 			var teams = [];
 			var captain = false;
 			teams[1] = 0;
 			teams[2] = 0;
-			for (var i = data.length - 1; i >= 0; i--) {
-				if (data[i].team === undefined) {
+			for (var i = users.length - 1; i >= 0; i--) {
+				if (users[i].team === undefined) {
 					continue;
 				}
-				var team = data[i].team;
+				var team = users[i].team;
 				if (team == 1) {
 					teams[1]++;
 				} else if (team == 2) {
@@ -89,32 +82,32 @@ $('document').ready(function () {
 			if (teams[team] == 0) {
 				captain = true;
 			}
-			callback(team, captain);
+			// pass the team and captain to the handler
+			handler(team, captain);
 		});
 	}
 
 	function startGame(data) {
 		$('.result').html(data[0].username);
 		user = data[0];
-		//if the user is a captain, show the captain menu
-		if (user.captain) {
+		console.log(data);
+		//if the data is a captain, show the captain menu
+		if (data.captain) {
 			$('.captain').show();
 		}
 		$('.player').show();
-		$(".team").html("Team " + user.team);
-		$(".overlay").addClass('team'+user.team);
+		$(".team").html("Team " + data.team);
+		$(".overlay").addClass('team'+data.team);
 		//show the map
 		showMap();
-		//refresh every two seconds
-		setInterval(refresh, 2000);
+		//refresh every x seconds
+		var interval = 2000;
+		setInterval(refresh, interval);
 	}
 
 	function refresh(){
 		getFlags();
 		getUsers();
-		if("vibrate" in navigator){
-			navigator.vibrate(1000);
-		}
 	}
 
 	function checkBase(){
@@ -154,14 +147,14 @@ $('document').ready(function () {
 			//plot the other users
 			for (var i = users.length - 1; i >= 0; i--) {
 				//plot other players with blank markers
-				map.placeMarker(users[i].uuid, users[i].location, users[i].username, 'http://maps.google.com/mapfiles/kml/paddle/' + colors[users[i].team - 1] + '-blank.png');
+				map.placeMarker(users[i].uuid, users[i].location, users[i].username, 'http://maps.google.com/mapfiles/kml/paddle/' + flagcolors[users[i].team - 1] + '-blank.png');
 				// update the current users information
 				if(users[i].uuid == user.uuid){
 					user = users[i];
 				}
 			};
 			//if it is the current user, plot with a diamond
-			map.placeMarker(user.uuid, user.location, 'You ('+user.username+')', 'http://maps.google.com/mapfiles/kml/paddle/' + colors[user.team - 1] + '-diamond.png');
+			map.placeMarker(user.uuid, user.location, 'You ('+user.username+')', 'http://maps.google.com/mapfiles/kml/paddle/' + flagcolors[user.team - 1] + '-diamond.png');
 		});
 	}
 
@@ -173,9 +166,9 @@ $('document').ready(function () {
 				var team = teams[i];
 				//hide the flag if it's been picked up
 				if(team.pickedup === undefined || !team.pickedup){
-					map.placeMarker(team.uuid, team.flag, 'Flag ' + team.team, 'http://maps.google.com/mapfiles/kml/paddle/' + colors[team.team - 1] + '-stars.png');
+					map.placeMarker(team.uuid, team.flag, 'Flag ' + team.team, 'http://maps.google.com/mapfiles/kml/paddle/' + flagcolors[team.team - 1] + '-stars.png');
 				}
-				map.placeCircle(team.team, team.base, colors[team.team - 1]);
+				map.placeCircle(team.team, team.base, basecolors[team.team - 1]);
 				bases[team.team - 1] = true;
 				$('.score [data-team='+team.team+']').text(team.score);
 
@@ -184,10 +177,11 @@ $('document').ready(function () {
 			if(bases[user.team - 1]){
 				$('.placeflag').hide();
 			}
+			//check if the user is in the base
 			checkBase();
 		});
 	}
-
+	//show the map
 	function showMap() {
 		watchLocation(function (coords) {
 			$('.coords').html(coords.latitude + ',' + coords.longitude);
@@ -209,13 +203,12 @@ $('document').ready(function () {
 				map.center(latlng);
 			}
 		}, function () {
-			$('.coords').html('error');
+			$('.coords').html('Error getting coordinates.');
 		}, {
 			timeout: 0
 		});
 	}
-
-
+	// is the curnet user in team's base?
 	function inBase(team){
 		var latlng = strToLat(user.location);
 		var base;
