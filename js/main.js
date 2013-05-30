@@ -81,7 +81,7 @@ $('document').ready(function () {
 			refresh();
 		}, 2000);
 	}
-
+	//refresh the data. this is called on an interval
 	function refresh(){
 		var timeout = new Date(new Date().getTime() - 600000 ^ 10).toISOString();
 		$.when(
@@ -90,14 +90,22 @@ $('document').ready(function () {
 		).then(function(users,flags){
 			handleUsers(users[0]);
 			handleFlags(flags[0]);
+			//if nobody has the opponents flag, check if we're able to pick it up
+			if(userHasFlag(users[0]), otherTeam(user.team)){
+				checkBase();
+			}
+			//if user has the flag and theyre in their base, score
+			if(user.hasflag && inBase(user.team)){
+				score();
+			}
 		});
 	}
-
+	//handle users return by the service
 	function handleUsers(users){
 		//plot the other users
 		for (var i = users.length - 1; i >= 0; i--) {
-				// update the current users information
-			if(users[i].uuid == user.uuid){
+			// update the current users information
+			if(users[i].uuid === user.uuid){
 				user = users[i];
 			} else {
 				//plot other players with blank markers
@@ -130,8 +138,6 @@ $('document').ready(function () {
 		} else {
 			$('.placeflag').show();
 		}
-		//check if the user is in the base
-		checkBase();
 	}
 
 	//show the map

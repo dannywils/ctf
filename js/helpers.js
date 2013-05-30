@@ -60,12 +60,8 @@ function checkBase(){
 	var otherteam = otherTeam(user.team);
 	if(inBase(otherteam) && !user.hasflag){
 		$('.captureflag').show();
-
 	} else {
 		$('.captureflag').hide();
-	}
-	if(user.hasflag && inBase(user.team)){
-		score();
 	}
 }
 
@@ -93,6 +89,16 @@ function inBase(team){
 	if(base !== undefined){
 		var bounds = base.getBounds();
 		return bounds.contains(latlng);
+	}
+	return false;
+}
+
+function userHasFlag(userArray,team){
+	for (var i = userArray.length - 1; i >= 0; i--) {
+
+		if(userArray[i].hasflag && userArray[i].team === team){
+			true;
+		}
 	}
 	return false;
 }
