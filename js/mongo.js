@@ -4,53 +4,38 @@ function mongolab(){
 	var API_KEY = "KWOsyikz7NuciZf8MhXdXZmZf9-Nxo51";
 	var DATABASE = "capturetheflag";
 	// insert document content into collection
-	this.select = function(collection, query, callback){
+	this.select = function(collection, query){
 		query = JSON.stringify(query);
-		$.ajax({
+		return $.ajax({
 			url: 'https://api.mongolab.com/api/1/databases/'+DATABASE+'/collections/'+collection+'?q='+query+'&apiKey='+ API_KEY,
 			type: "GET",
-			contentType: "application/json",
-			success: function (data) {
-				callback(data);
-			}
+			contentType: "application/json"
 		});
 	}
 
-	this.insert = function(collection, content, callback){
-		$.ajax({
+	this.insert = function(collection, content){
+		return $.ajax({
 			url: "https://api.mongolab.com/api/1/databases/"+DATABASE+"/collections/"+collection+"?apiKey=" + API_KEY,
 			data: JSON.stringify(content),
 			type: "POST",
-			contentType: "application/json",
-			success: function (data) {
-				callback(data);
-			}
+			contentType: "application/json"
 		});
 	}
 
-	this.update = function(collection, query, update, callback){
-		var result;
-		$.ajax({
+	this.update = function(collection, query, update){
+		return $.ajax({
 			url: 'https://api.mongolab.com/api/1/databases/'+DATABASE+'/collections/'+collection+'?apiKey=' + API_KEY + '&q='+JSON.stringify(query),
 			data: JSON.stringify( { "$set" : update } ),
 			type: "PUT",
-			contentType: "application/json",
-			success: function (data) {
-				callback === undefined || callback(data);
-			},
+			contentType: "application/json"
 		});
 	}
 
-	this.delete = function(collection, id, callback){
-		var result;
-		$.ajax({ url: "https://api.mongolab.com/api/1/databases/"+DATABASE+"/collections/"+collection+"/"+id+"?apiKey=myAPIKey",
+	this.delete = function(collection, id){
+		return $.ajax({ url: "https://api.mongolab.com/api/1/databases/"+DATABASE+"/collections/"+collection+"/"+id+"?apiKey=myAPIKey",
 		       type: "DELETE",
 		       async: true,
-		       timeout: 300000,
-		       success: function (data) {
-		       	callback(data);
-		       },
-		       error: function (xhr, status, err) { }
+		       timeout: 300000
 		   });
 	}
 }

@@ -14,3 +14,85 @@ function strToLat(location){
 function otherTeam(team){
 	return otherteam = team == 1 ? 2 : 1;
 }
+
+//does the user exist within the userArray?
+function userExists(user, userArray){
+	for (var i = userArray.length - 1; i >= 0; i--) {
+		if(user.uuid === userArray[i].uuid){
+			return userArray[i];
+		}
+	};
+}
+
+//which team should the user be on given the users array
+function getUsersTeam(users) {
+	var teams = [];
+	var captain = false;
+	teams[1] = 0;
+	teams[2] = 0;
+	for (var i = users.length - 1; i >= 0; i--) {
+		if (users[i].team === undefined) {
+			continue;
+		}
+		var team = users[i].team;
+		if (team == 1) {
+			teams[1]++;
+		} else if (team == 2) {
+			teams[2]++;
+		}
+	};
+	// assign the user to the lowest team
+	var team = 1;
+	if (teams[1] > teams[2]) {
+		team = 2;
+	}
+	// if the user is the first on the team, make them a captain
+	if (teams[team] == 0) {
+		captain = true;
+	}
+	// pass the team and captain to the handler
+	return {team: team, captain:captain};
+}
+
+
+//check if the user is in the other base
+function checkBase(){
+	var otherteam = otherTeam(user.team);
+	if(inBase(otherteam) && !user.hasflag){
+		$('.captureflag').show();
+
+	} else {
+		$('.captureflag').hide();
+	}
+	if(user.hasflag && inBase(user.team)){
+		score();
+	}
+}
+
+//score a point for the user
+function score(){
+	user.hasflag = false;
+	$(".message").hide();
+	$.when(
+		db.select('teams',{ team: user.team }),
+		db.update('users',{ uuid: user.uuid }, { hasflag: false })
+	).then(function(teams){
+		db.update('teams',{ team: user.team }, { pickedup: false, score: teams[0][0].score + 1 });
+	});
+}
+
+// is the curnet user in team's base?
+function inBase(team){
+	var latlng = strToLat(user.location);
+	var base;
+	for (var key in circles) {
+		if(key == team){
+			base = circles[key];
+		}
+	}
+	if(base !== undefined){
+		var bounds = base.getBounds();
+		return bounds.contains(latlng);
+	}
+	return false;
+}

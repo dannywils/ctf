@@ -3,92 +3,69 @@ var user = null;
 var flagcolors = ['red', 'blu'];
 var basecolors = ['red', 'blue'];
 var bases = [false, false];
-var db;
+var db, map;
 $('document').ready(function () {
-	//create the database object
+	//create the database and map objects
 	db = new mongolab();
+	map = new mapper();
+	//run the startup functions
+	setup();
+	initializeUser();
+
 	//check if the player has a cookie
-	var username = $.cookie('username');
-	var uuid = $.cookie('uuid');
-	//if they are not signed in, prompt for a username
-	if (username === undefined || uuid === undefined) {
-		while(username === undefined || username == null){
-			username = prompt("Please enter your name", "Enter Name");
-		}
-		$.cookie('username', username, {
-			expires: 1
-		});
-		$.cookie('uuid', UUID(), {
-			expires: 1
-		});
-		uuid = $.cookie('uuid');
-	}
-
-	// check if the user exists in the database, if not insert them
-	var timeout = new Date(new Date().getTime() - 600000).toISOString();
-		db.select("users", {
-			username: username,
-			uuid: uuid,
-			"date": {
-				"$gt": timeout
+	function setup(){
+		var username = $.cookie('username');
+		var uuid = $.cookie('uuid');
+		//if they are not signed in, prompt for a username
+		if (username === undefined || uuid === undefined) {
+			while(username === undefined || username == null){
+				username = prompt("Please enter your name", "Enter Name");
 			}
-		}, function (data) {
-		//if the user doesn't exists, add them and refresh
-		if (data.length == 0) {
-			//check what team they should be on
-			whichTeam(function (team, captain) {
-				alert(team,captain);
-				db.insert("users", {
-					username: username,
-					team: team,
-					uuid: uuid,
-					captain: captain,
-					date: new Date().toISOString(),
-				}, function () {
-					//refresh after insert
-					document.location = '';
-				});
+			$.cookie('username', username, {
+				expires: 1
 			});
-		//otherwise start the game
-		} else {
-			startGame(data);
+			$.cookie('uuid', UUID(), {
+				expires: 1
+			});
+			uuid = $.cookie('uuid');
 		}
-	});
+		user = { uuid:uuid, username:username };
+	}	
 
-	//will pass team to handler
-	function whichTeam(handler) {
-		db.select("users", {}, function (users) {
-			var teams = [];
-			var captain = false;
-			teams[1] = 0;
-			teams[2] = 0;
-			for (var i = users.length - 1; i >= 0; i--) {
-				if (users[i].team === undefined) {
-					continue;
+	function initializeUser(){
+		// check if the user exists in the database, if not insert them
+		var timeout = new Date(new Date().getTime() - 600000).toISOString();
+		
+		$.when(
+			db.select("users", {
+				"date": {
+					"$gt": timeout
 				}
-				var team = users[i].team;
-				if (team == 1) {
-					teams[1]++;
-				} else if (team == 2) {
-					teams[2]++;
+			})
+		).then(
+			function(users){
+				var checkUser = userExists(user,users);
+				if(checkUser !== undefined){
+					user = checkUser;
+					startGame();
+				} else {
+					var team = getUsersTeam(users);
+					user = {
+						username: user.username,
+						uuid: user.uuid,
+						team: team.team,
+						captain: team.captain,
+						date: new Date().toISOString(),
+					}
+					$.when(db.insert("users", user)).then(function(){
+						startGame();
+					});
 				}
-			};
-			// assign the user to the lowest team
-			var team = 1;
-			if (teams[1] > teams[2]) {
-				team = 2;
 			}
-			// if the user is the first on the team, make them a captain
-			if (teams[team] == 0) {
-				captain = true;
-			}
-			// pass the team and captain to the handler
-			handler(team, captain);
-		});
+		);
 	}
 
-	function startGame(data) {
-		user = data[0];
+	function startGame() {
 		$('.result').html(user.username);
 		//if the data is a captain, show the captain menu
 		if (user.captain) {
@@ -98,127 +75,94 @@ $('document').ready(function () {
 		$(".team").html("Team " + user.team);
 		$(".overlay").addClass('team'+user.team);
 		//show the map
-		showMap();
+		initializeLocation();
 		//refresh every x seconds
-		var interval = 2000;
-		setInterval(refresh, interval);
+		setInterval(function(){
+			refresh();
+		}, 2000);
 	}
 
 	function refresh(){
-		getFlags();
-		getUsers();
-	}
-
-	function checkBase(){
-		var otherteam = otherTeam(user.team);
-		if(inBase(otherteam) && !user.hasflag){
-			$('.captureflag').css('visibility','visible');
-		} else {
-			$('.captureflag').css('visibility','hidden');
-		}
-		if(user.hasflag && inBase(user.team)){
-			score();
-		}
-	}
-
-	function score(){
-		user.hasflag = false;
-		db.select('teams',{ team: user.team }, function(data){
-			db.update('teams',{ team: user.team }, { pickedup: false, score: data[0].score + 1 });
-		});
-		db.update('users',{ uuid: user.uuid }, { hasflag: false });
-		$(".message").hide();
-	}
-
-	var map = new mapper();
-
-	//get the player locations
-	function getUsers() {
-		//only show people who have been active within the last 10 minutes
 		var timeout = new Date(new Date().getTime() - 600000 ^ 10).toISOString();
-		//select all users that are not you
-		db.select('users', {
-			"date": {
-				"$gt": timeout
-			}
-		}, function (users) {
-			//plot the other users
-			for (var i = users.length - 1; i >= 0; i--) {
+		$.when(
+			db.select('users', {"date": {"$gt": timeout}}),
+			db.select('teams', {})
+		).then(function(users,flags){
+			handleUsers(users[0]);
+			handleFlags(flags[0]);
+		});
+	}
+
+	function handleUsers(users){
+		//plot the other users
+		for (var i = users.length - 1; i >= 0; i--) {
+				// update the current users information
+			if(users[i].uuid == user.uuid){
+				user = users[i];
+			} else {
 				//plot other players with blank markers
 				map.placeMarker(users[i].uuid, users[i].location, users[i].username, 'http://maps.google.com/mapfiles/kml/paddle/' + flagcolors[users[i].team - 1] + '-blank.png');
-				// update the current users information
-				if(users[i].uuid == user.uuid){
-					user = users[i];
-				}
-			};
-			//if it is the current user, plot with a diamond
-			map.placeMarker(user.uuid, user.location, 'You ('+user.username+')', 'http://maps.google.com/mapfiles/kml/paddle/' + flagcolors[user.team - 1] + '-diamond.png');
-		});
+			}
+		};
+		//plot yourself last
+		map.placeMarker(user.uuid, user.location, 'You ('+user.username+')', 'http://maps.google.com/mapfiles/kml/paddle/' + flagcolors[user.team - 1] + '-diamond.png');
+		if(user.hasflag){
+			$(".message").show();
+		}
 	}
 
 	//get flag and base locations
-	function getFlags() {
-		db.select('teams', {}, function (teams) {
-			for (var i = teams.length - 1; i >= 0; i--) {
-				var team = teams[i];
-				//hide the flag if it's been picked up
-				if(team.pickedup === undefined || !team.pickedup){
-					map.placeMarker(team.uuid, team.flag, 'Flag ' + team.team, 'http://maps.google.com/mapfiles/kml/paddle/' + flagcolors[team.team - 1] + '-stars.png');
-				}
-				map.placeCircle(team.team, team.base, basecolors[team.team - 1]);
-				bases[team.team - 1] = true;
-				$('.score [data-team='+team.team+']').text(team.score);
-
+	function handleFlags(teams) {
+		for (var i = teams.length - 1; i >= 0; i--) {
+			var team = teams[i];
+			//hide the flag if it's been picked up
+			if(team.pickedup === undefined || !team.pickedup){
+				map.placeMarker(team.uuid, team.flag, 'Flag ' + team.team, 'http://maps.google.com/mapfiles/kml/paddle/' + flagcolors[team.team - 1] + '-stars.png');
 			}
-			//if the flag has been set, hide the place button
-			if(bases[user.team - 1]){
-				$('.placeflag').hide();
-			}
-			//check if the user is in the base
-			checkBase();
-		});
+			map.placeCircle(team.team, team.base, basecolors[team.team - 1]);
+			// set the flag as placed
+			bases[team.team] = true;
+			$('.score [data-team='+team.team+']').text(team.score);
+		}
+		//if the flag has been set, hide the place button
+		if(bases[user.team]){
+			$('.placeflag').hide();
+		} else {
+			$('.placeflag').show();
+		}
+		//check if the user is in the base
+		checkBase();
 	}
+
 	//show the map
-	function showMap() {
+	function initializeLocation() {
 		watchLocation(function (coords) {
-			$('.coords').html(coords.latitude + ',' + coords.longitude);
 			user.location = coords.latitude + ',' + coords.longitude;
+			$('.coords').html(user.location);
+			
 			//send your location to the server
 			db.update('users',
 			{
 				uuid: user.uuid
-			}, {
+			}, 
+			{
 				location: user.location,
 				date: new Date().toISOString()
 			});
-			//get the other users
+			//call refresh to get users and teams
 			refresh();
-
 			//center on the user location
 			if (user.location !== undefined) {
 				var latlng = new google.maps.LatLng(user.location.split(",")[0], user.location.split(",")[1]);
 				map.center(latlng);
 			}
 		}, function () {
+			//error with geolocation
 			$('.coords').html('Error getting coordinates.');
 		}, {
+			//options
 			timeout: 0
 		});
-	}
-	// is the curnet user in team's base?
-	function inBase(team){
-		var latlng = strToLat(user.location);
-		var base;
-		for (var key in circles) {
-			if(key == team){
-				base = circles[key];
-			}
-		}
-		if(base !== undefined){
-			var bounds = base.getBounds();
-			return bounds.contains(latlng);
-		}
-		return false;
 	}
 });
 
