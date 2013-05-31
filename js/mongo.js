@@ -1,4 +1,8 @@
-// LOW LEVEL MONGOLABS API FUNCTIONS
+/*
+*	Low level mongolab API calls
+*	Use jQuery .when and .then to get data
+*/
+
 function mongolab(){
 	//private methods
 	var API_KEY = "KWOsyikz7NuciZf8MhXdXZmZf9-Nxo51";

@@ -1,3 +1,7 @@
+/*
+*	Main game logic
+*/
+
 //global user variable
 var user = null;
 var flagcolors = ['red', 'blu'];
@@ -30,13 +34,13 @@ $('document').ready(function () {
 			uuid = $.cookie('uuid');
 		}
 		user = { uuid:uuid, username:username };
-	}	
+	}
 
 	function initializeUser(){
 		// check if the user exists in the database, if not insert them
 		var timeout = new Date(new Date().getTime() - 600000).toISOString();
-		
 		$.when(
+			//get all users
 			db.select("users", {
 				"date": {
 					"$gt": timeout
@@ -45,10 +49,12 @@ $('document').ready(function () {
 		).then(
 			function(users){
 				var checkUser = userExists(user,users);
+				//if the user exists, start the game
 				if(checkUser !== undefined){
 					user = checkUser;
 					startGame();
 				} else {
+					//if the user does not exist, create them
 					var team = getUsersTeam(users);
 					user = {
 						username: user.username,
@@ -64,7 +70,7 @@ $('document').ready(function () {
 			}
 		);
 	}
-
+	//sets the view and starts the interval
 	function startGame() {
 		$('.result').html(user.username);
 		//if the data is a captain, show the captain menu
@@ -79,8 +85,9 @@ $('document').ready(function () {
 		//refresh every x seconds
 		setInterval(function(){
 			refresh();
-		}, 2000);
+		}, 1000);
 	}
+
 	//refresh the data. this is called on an interval
 	function refresh(){
 		var timeout = new Date(new Date().getTime() - 600000 ^ 10).toISOString();
@@ -100,6 +107,7 @@ $('document').ready(function () {
 			}
 		});
 	}
+
 	//handle users return by the service
 	function handleUsers(users){
 		//plot the other users
@@ -140,17 +148,14 @@ $('document').ready(function () {
 		}
 	}
 
-	//show the map
+	// set the geolocation
 	function initializeLocation() {
 		watchLocation(function (coords) {
 			user.location = coords.latitude + ',' + coords.longitude;
 			$('.coords').html(user.location);
-			
+
 			//send your location to the server
-			db.update('users',
-			{
-				uuid: user.uuid
-			}, 
+			db.update('users', { uuid: user.uuid },
 			{
 				location: user.location,
 				date: new Date().toISOString()
@@ -163,10 +168,10 @@ $('document').ready(function () {
 				map.center(latlng);
 			}
 		}, function () {
-			//error with geolocation
+			//if there is an error with geolocation
 			$('.coords').html('Error getting coordinates.');
 		}, {
-			//options
+			//set some options
 			timeout: 0
 		});
 	}

@@ -1,3 +1,9 @@
+/*
+*	Map object and functionality including
+*	Google Maps and HTML5 Geolocation API
+*/
+
+//global markers and circles variables
 var markers = [],
 	circles = [];
 

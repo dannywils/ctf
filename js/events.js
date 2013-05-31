@@ -1,3 +1,6 @@
+/*
+*	Event handlers
+*/
 //refresh on button press
 $(function(){
 	$('button.captureflag').click(function () {
@@ -5,7 +8,7 @@ $(function(){
 		$(".message").show();
 		db.update('teams', { team: otherTeam(user.team) }, { pickedup: true });
 		db.update('users',{ uuid: user.uuid }, { hasflag: true });
-		
+
 	});
 	$('button.placeflag').click(function () {
 		$(this).hide();
