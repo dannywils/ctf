@@ -44,4 +44,5 @@ $(function(){
     }, false);
   }
 
+	var r = document.body.mozRequestFullScreen || document.body.webkitRequestFullScreen || document.body.requestFullScreen; r && r.call(document.body);
 });
