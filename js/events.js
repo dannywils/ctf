@@ -10,6 +10,7 @@ $(function(){
 		db.update('users',{ uuid: user.uuid }, { hasflag: true });
 
 	});
+
 	$('button.placeflag').click(function () {
 		$(this).hide();
 		db.insert('teams', {
@@ -22,27 +23,17 @@ $(function(){
 		});
 	});
 
-  var rotate = function (deg) {
-      $(".compass").css({ "-moz-transform": "rotate(0deg)"});
-      $(".compass").css({ "-moz-transform": "rotate(" + deg + "deg)"});
-
-      $(".compass").css({ "-o-transform": "rotate(0deg)"});
-      $(".compass").css({ "-o-transform": "rotate(" + deg + "deg)"});
-
-      $(".compass").css({ "-ms-transform": "rotate(0deg)"});
-      $(".compass").css({ "-ms-transform": "rotate(" + deg + "deg)"});
-
-      $(".compass").css({ "-webkit-transform": "rotate(0deg)"});
-      $(".compass").css({ "-webkit-transform": "rotate(" + deg + "deg)"});
-
-      $(".compass").css({ "transform": "rotate(0deg)"});
-      $(".compass").css({ "transform": "rotate(" + deg + "deg)"});
-  };
-  if (window.DeviceOrientationEvent) {
-    window.addEventListener("deviceorientation", function (e) {
-      rotate(360 - e.alpha);
-    }, false);
-  }
-
-	var r = document.body.mozRequestFullScreen || document.body.webkitRequestFullScreen || document.body.requestFullScreen; r && r.call(document.body);
+	//rotate the compass when the device orientation changes
+	if (window.DeviceOrientationEvent) {
+		window.addEventListener("deviceorientation", function (e) {
+			var deg = (360 - (e.alpha % 360));
+			console.log(deg);
+			$(".compass").css({ "-webkit-transform": "rotate(" + deg + "deg)"});
+		}, false);
+	}
+	//full screen when the user clicks the page
+	//cannot be done automatically for security reasons
+	$('body').click(function(){
+		$(this)[0].webkitRequestFullScreen();
+	});
 });

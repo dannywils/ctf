@@ -34,6 +34,7 @@ $('document').ready(function () {
 			uuid = $.cookie('uuid');
 		}
 		user = { uuid:uuid, username:username };
+		  	document.body.webkitRequestFullScreen();
 	}
 
 	function initializeUser(){
