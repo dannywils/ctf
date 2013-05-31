@@ -20,7 +20,7 @@
 		<h1><span class="icon-stack">
 			<i class="icon-circle icon-stack-base"></i>
 			<i class="icon-flag icon-light"></i>
-		</span> Capture the Flag</h1>
+		</span> CTF</h1>
 		<p>
 			<span class="icon">
 				<i class="icon-user"></i>
@@ -38,23 +38,26 @@
 				<i class="icon-group"></i>
 			</span>
 			<span class="team"> Loading team data... <i class="icon-spinner icon-spin icon-large"></i></span>
+			<span class="captain"> (Captain)</span>
 		</p>
 		<!-- Captain -->
 		<span class="captain">
-			You are the captain!<br/>
 			<button class="placeflag">Place Flag</button>
 		</span>
-		<span class="score">
-			<span data-team="1" class="team1">0</span> - <span data-team="2" class="team2">0</span>
-		</span>
-		<span class="message">
+		<p class="score">
+			<span data-team="1" class="team1">?</span> - <span data-team="2" class="team2">?</span>
+		</p>
+		<p class="message blink">
 			Return to your base!
-		</span>
+		</p>
 		<!-- Player -->
 		<span class="player">
 			<button class="captureflag">Capture Flag</button>
 		</span>
 	</div>
 	<div id="map"></div>
+	<div id="scored">
+		<i class="icon-trophy"></i> Score!
+	</div>
 </body>
 </html>

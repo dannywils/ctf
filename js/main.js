@@ -101,11 +101,12 @@ $('document').ready(function () {
 			if(userHasFlag(users[0]), otherTeam(user.team)){
 				checkBase();
 			}
-			//if user has the flag and theyre in their base, score
-			if(user.hasflag && inBase(user.team)){
-				score();
-			}
+
 		});
+		//if user has the flag and theyre in their base, score
+		if(user.hasflag && inBase(user.team)){
+			score();
+		}
 	}
 
 	//handle users return by the service

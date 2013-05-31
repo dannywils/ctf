@@ -62,7 +62,7 @@ function getUsersTeam(users) {
 // check if the user is in the other base for enabling picking up the flag
 function checkBase(){
 	var otherteam = otherTeam(user.team);
-	if(bases[0] && bases[1] && inBase(otherteam) && !user.hasflag){
+	if(bases[1] && bases[2] && inBase(otherteam) && !user.hasflag){
 		$('.captureflag').show();
 	} else {
 		$('.captureflag').hide();
@@ -73,6 +73,7 @@ function checkBase(){
 function score(){
 	user.hasflag = false;
 	$(".message").hide();
+	$("#scored").slideDown('slow').delay(1500).slideUp('slow');
 	$.when(
 		db.select('teams',{ team: user.team }),
 		db.update('users',{ uuid: user.uuid }, { hasflag: false })
