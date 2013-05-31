@@ -55,10 +55,12 @@ function mapper() {
 				this.createMarker(uuid, latlng, text, icon);
 				return;
 			}
-			// if the location has changed, clear the marker and create a new one
+			// if the location has changed, update it
 			if (!marker.getPosition().equals(latlng)) {
-				marker.setMap(null);
-				this.createMarker(uuid, latlng, text, icon);
+				marker.setPosition(latlng);
+				if(uuid == user.uuid){
+					marker.setAnimation(google.maps.Animation.BOUNCE);
+				}
 			}
 		}
 	};
@@ -85,7 +87,7 @@ function mapper() {
 		markers[uuid] = marker;
 		//add info window
 		google.maps.event.addListener(marker, 'click', function () {
-			infowindow.setContent('<strong>' + text + '</strong><br>' + latlng.toString());
+			infowindow.setContent('<strong>' + text + '</strong><br>');
 			infowindow.open(map, marker);
 		});
 
