@@ -25,6 +25,7 @@ function mapper() {
 		scaleControl: true,
 		draggable: true
 	});
+	this.map = map;
 
 	var infowindow = new google.maps.InfoWindow({
 		size: new google.maps.Size(150, 50)
@@ -58,23 +59,28 @@ function mapper() {
 			if (!marker.getPosition().equals(latlng)) {
 				marker.setMap(null);
 				this.createMarker(uuid, latlng, text, icon);
-			} else {
-				//console.debug('unchanged');
 			}
 		}
 	};
 
 	this.createMarker = function (uuid, latlng, text, icon) {
-		var zindex = 0;
+		var zindex = 0, isCurrentUser = false;
 		//current user is always on top
 		if(uuid == user.uuid){
 			zindex = 1;
+			isCurrentUser = true;
 		}
+
 		var marker = new google.maps.Marker({
 			map: map,
 			position: latlng,
-			zIndex: zindex
+			zIndex: zindex,
 		});
+
+		if(isCurrentUser){
+			marker.setAnimation(google.maps.Animation.BOUNCE);
+		}
+
 		marker.setIcon(icon);
 		markers[uuid] = marker;
 		//add info window

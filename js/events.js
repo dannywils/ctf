@@ -21,4 +21,27 @@ $(function(){
 			score: 0
 		});
 	});
+
+  var rotate = function (deg) {
+      $(".compass").css({ "-moz-transform": "rotate(0deg)"});
+      $(".compass").css({ "-moz-transform": "rotate(" + deg + "deg)"});
+
+      $(".compass").css({ "-o-transform": "rotate(0deg)"});
+      $(".compass").css({ "-o-transform": "rotate(" + deg + "deg)"});
+
+      $(".compass").css({ "-ms-transform": "rotate(0deg)"});
+      $(".compass").css({ "-ms-transform": "rotate(" + deg + "deg)"});
+
+      $(".compass").css({ "-webkit-transform": "rotate(0deg)"});
+      $(".compass").css({ "-webkit-transform": "rotate(" + deg + "deg)"});
+
+      $(".compass").css({ "transform": "rotate(0deg)"});
+      $(".compass").css({ "transform": "rotate(" + deg + "deg)"});
+  };
+  if (window.DeviceOrientationEvent) {
+    window.addEventListener("deviceorientation", function (e) {
+      rotate(360 - e.alpha);
+    }, false);
+  }
+
 });
