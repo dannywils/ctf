@@ -3,6 +3,7 @@
 */
 //refresh on button press
 $(function(){
+	//pick up the flag
 	$('button.captureflag').click(function () {
 		$(this).hide();
 		$(".message").show();
@@ -11,6 +12,7 @@ $(function(){
 
 	});
 
+	//place the flag
 	$('button.placeflag').click(function () {
 		$(this).hide();
 		db.insert('teams', {
@@ -27,10 +29,10 @@ $(function(){
 	if (window.DeviceOrientationEvent) {
 		window.addEventListener("deviceorientation", function (e) {
 			var deg = (360 - (e.alpha % 360));
-			console.log(deg);
 			$(".compass").css({ "-webkit-transform": "rotate(" + deg + "deg)"});
 		}, false);
 	}
+
 	//full screen when the user clicks the page
 	//cannot be done automatically for security reasons
 	$('body').click(function(){
