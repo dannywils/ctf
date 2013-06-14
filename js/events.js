@@ -36,6 +36,6 @@ $(function(){
 	//full screen when the user clicks the page
 	//cannot be done automatically for security reasons
 	$('body').click(function(){
-		$(this)[0].webkitRequestFullScreen();
+		//$(this)[0].webkitRequestFullScreen();
 	});
 });
