@@ -36,11 +36,19 @@ function mongolab(){
 	}
 
 	this.delete = function(collection, id){
-		return $.ajax({ url: "https://api.mongolab.com/api/1/databases/"+DATABASE+"/collections/"+collection+"/"+id+"?apiKey=myAPIKey",
+		return $.ajax({ url: "https://api.mongolab.com/api/1/databases/"+DATABASE+"/collections/"+collection+"/"+id+"?apiKey=" + API_KEY,
 		       type: "DELETE",
 		       async: true,
 		       timeout: 300000
 		   });
+	}
+
+
+	this.clear = function(collection, query){
+		return $.ajax({ url: "https://api.mongolab.com/api/1/databases/"+DATABASE+"/collections/"+collection+"?q="+JSON.stringify(query)+"&apiKey=" + API_KEY,
+          data: JSON.stringify( [] ),
+          type: "PUT",
+          contentType: "application/json" } );
 	}
 }
 

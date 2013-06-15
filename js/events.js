@@ -14,7 +14,7 @@ $(function(){
 
 	//place the flag
 	$('button.placeflag').click(function () {
-		$(this).hide();
+		$(this).remove();
 		db.insert('teams', {
 			flag: user.location,
 			base: user.location,

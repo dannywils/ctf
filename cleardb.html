@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Capture the Flag</title>
+	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+	<meta name="viewport" content="width=device-width" />
+	<script src="http://code.jquery.com/jquery-1.6.2.min.js"></script>
+	<script src="js/mongo.js"></script>
+</head>
+<body>
+<script>
+	var db = new mongolab();
+	$.when(
+	    db.clear('users', {}),
+	    db.clear('teams', {}))
+	.then(function(){
+		$('body').text('Database cleared');
+	});
+</script>
+</body>
+</html>
