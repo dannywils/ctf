@@ -10,7 +10,9 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.openqa.selenium.Alert;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 
@@ -33,8 +35,9 @@ public class Main {
 		cleardb.quit();
 		// load two instances of the game
 		browser1 = new ChromeDriver();
+		browser1.manage().window().setSize(new Dimension(480, 800));
+		browser1.manage().window().setPosition(new Point(0,0));
 		browser1.get(gameUrl);
-
 		// handle the prompts
 		Alert javascriptprompt1 = browser1.switchTo().alert();
 		javascriptprompt1.sendKeys("Test user 1");
@@ -43,8 +46,9 @@ public class Main {
 		Thread.sleep(1000);
 
 		browser2 = new ChromeDriver();
+		browser2.manage().window().setSize(new Dimension(480, 800));
+		browser2.manage().window().setPosition(new Point(480,0));
 		browser2.get(gameUrl);
-
 		// handle the prompts
 		Alert javascriptprompt2 = browser2.switchTo().alert();
 		javascriptprompt2.sendKeys("Test user 2");

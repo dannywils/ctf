@@ -71,6 +71,9 @@ function checkBase(){
 
 // score a point for the user's team
 function score(){
+	if(!user.hasflag){
+		return;
+	}
 	user.hasflag = false;
 	$(".message").hide();
 	$("#scored").slideDown('slow').delay(1500).slideUp('slow');
