@@ -105,6 +105,9 @@ public class Main {
 	public void test3() throws Exception {
 		((JavascriptExecutor) browser1)
 				.executeScript("game.updateCoords({latitude: 2,longitude: 2})");
+		
+		Thread.sleep(2000);
+		
 		((JavascriptExecutor) browser2)
 				.executeScript("game.updateCoords({latitude: 1,longitude: 1})");
 
@@ -129,6 +132,9 @@ public class Main {
 	public void test4() throws Exception {
 		((JavascriptExecutor) browser1)
 				.executeScript("game.updateCoords({latitude: 1,longitude: 1})");
+		
+		Thread.sleep(2000);
+		
 		((JavascriptExecutor) browser2)
 				.executeScript("game.updateCoords({latitude: 2,longitude: 2})");
 
