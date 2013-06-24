@@ -23,7 +23,99 @@ function mapper() {
 		navigationControl: false,
 		mapTypeControl: false,
 		scaleControl: true,
-		draggable: true
+		backgroundColor: '#4b59dc',
+		draggable: true,
+		styles: [
+				  {
+				    "featureType": "water",
+				    "stylers": [
+				      { "color": "#4b59dc" }
+				    ]
+				  },{
+				    "featureType": "road.arterial",
+				    "stylers": [
+				      { "color": "#5a5a5a" }
+				    ]
+				  },{
+				    "featureType": "landscape.man_made",
+				    "stylers": [
+				      { "color": "#ffffff" }
+				    ]
+				  },{
+				    "featureType": "road.local",
+				    "elementType": "labels.text",
+				    "stylers": [
+				      { "visibility": "off" }
+				    ]
+				  },{
+				    "featureType": "road.arterial",
+				    "elementType": "labels.text.fill",
+				    "stylers": [
+				      { "color": "#ffffff" }
+				    ]
+				  },{
+				    "elementType": "labels.icon",
+				    "stylers": [
+				      { "visibility": "off" }
+				    ]
+				  },{
+				    "featureType": "poi",
+				    "elementType": "labels.text",
+				    "stylers": [
+				      { "visibility": "off" }
+				    ]
+				  },{
+				    "featureType": "landscape",
+				    "stylers": [
+				      { "color": "#ffffff" }
+				    ]
+				  },{
+				    "featureType": "road.highway",
+				    "stylers": [
+				      { "color": "#2d2d2d" }
+				    ]
+				  },{
+				    "featureType": "poi.park",
+				    "stylers": [
+				      { "visibility": "simplified" }
+				    ]
+				  },{
+				    "featureType": "poi.park",
+				    "elementType": "labels.icon",
+				    "stylers": [
+				      { "visibility": "off" }
+				    ]
+				  },{
+				    "featureType": "administrative"  },{
+				    "featureType": "poi.park",
+				    "stylers": [
+				      { "color": "#dcdcdc" }
+				    ]
+				  },{
+				    "featureType": "poi.medical",
+				    "stylers": [
+				      { "color": "#ffffff" }
+				    ]
+				  },{
+				    "featureType": "poi.school",
+				    "stylers": [
+				      { "visibility": "off" }
+				    ]
+				  },{
+				    "featureType": "landscape.man_made"  },
+				  {
+					"featureType": "transit.line",
+					"stylers": [
+						{ "color": "#aa0001" }
+					]
+				  },{
+					"featureType": "transit.line",
+					"elementType": "labels.text.fill",
+					"stylers": [
+						{ "color": "#ffffff" }
+					]
+				  }
+				  ]
 	});
 	this.map = map;
 
