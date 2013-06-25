@@ -18,8 +18,8 @@ import org.openqa.selenium.chrome.ChromeDriver;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class Main {
-	private static ChromeDriver browser1;
-	private static ChromeDriver browser2;
+	private static ChromeDriver browser1,browser2,browser3,browser4,browser5,browser6,browser7,browser8;
+
 	private static final String gameUrl = "http://127.0.0.1/ctf/";
 
 	@BeforeClass
@@ -155,6 +155,98 @@ public class Main {
 		assertEquals("Check team 2 score", "1", team2_score);
 
 	}
+	
+	//test team balancing
+	@Test
+	public void test5() throws Exception {
+		
+		//Create a bunch of game instances
+		
+		browser3 = new ChromeDriver();
+		browser3.manage().window().setSize(new Dimension(480, 360));
+		browser3.manage().window().setPosition(new Point(0,0));
+		browser3.get(gameUrl);
+		// handle the prompts
+		Alert javascriptprompt3 = browser3.switchTo().alert();
+		javascriptprompt3.sendKeys("Test user 3");
+		javascriptprompt3.accept();
+
+		Thread.sleep(500);
+		
+		browser4 = new ChromeDriver();
+		browser4.manage().window().setSize(new Dimension(480, 360));
+		browser4.manage().window().setPosition(new Point(480,0));
+		browser4.get(gameUrl);
+		// handle the prompts
+		Alert javascriptprompt4 = browser4.switchTo().alert();
+		javascriptprompt4.sendKeys("Test user 4");
+		javascriptprompt4.accept();
+		
+		Thread.sleep(500);
+		
+		browser5 = new ChromeDriver();
+		browser5.manage().window().setSize(new Dimension(480, 360));
+		browser5.manage().window().setPosition(new Point(960,0));
+		browser5.get(gameUrl);
+		// handle the prompts
+		Alert javascriptprompt5 = browser5.switchTo().alert();
+		javascriptprompt5.sendKeys("Test user 5");
+		javascriptprompt5.accept();
+		
+		Thread.sleep(500);
+		
+		browser6 = new ChromeDriver();
+		browser6.manage().window().setSize(new Dimension(480, 360));
+		browser6.manage().window().setPosition(new Point(0,360));
+		browser6.get(gameUrl);
+		// handle the prompts
+		Alert javascriptprompt6 = browser6.switchTo().alert();
+		javascriptprompt6.sendKeys("Test user 6");
+		javascriptprompt6.accept();
+		
+		Thread.sleep(500);
+		
+		browser7 = new ChromeDriver();
+		browser7.manage().window().setSize(new Dimension(480, 360));
+		browser7.manage().window().setPosition(new Point(480,360));
+		browser7.get(gameUrl);
+		// handle the prompts
+		Alert javascriptprompt7 = browser7.switchTo().alert();
+		javascriptprompt7.sendKeys("Test user 7");
+		javascriptprompt7.accept();
+		
+		Thread.sleep(500);
+		
+		browser8 = new ChromeDriver();
+		browser8.manage().window().setSize(new Dimension(480, 360));
+		browser8.manage().window().setPosition(new Point(960,360));
+		browser8.get(gameUrl);
+		// handle the prompts
+		Alert javascriptprompt8 = browser8.switchTo().alert();
+		javascriptprompt8.sendKeys("Test user 8");
+		javascriptprompt8.accept();
+		
+		//Do the players alternate 
+		//from one team to another when joining?
+		
+		WebElement team = browser3.findElementByClassName("team");
+		assertTrue(team.getText().contains("Team 1"));
+
+		team = browser4.findElementByClassName("team");
+		assertTrue(team.getText().contains("Team 2"));
+		
+		team = browser5.findElementByClassName("team");
+		assertTrue(team.getText().contains("Team 1"));
+
+		team = browser6.findElementByClassName("team");
+		assertTrue(team.getText().contains("Team 2"));
+		
+		team = browser7.findElementByClassName("team");
+		assertTrue(team.getText().contains("Team 1"));
+		
+		team = browser8.findElementByClassName("team");
+		assertTrue(team.getText().contains("Team 2"));
+	}
 
 	// Sleep 1 seconds between each test
 	@After
@@ -168,5 +260,12 @@ public class Main {
 		Thread.sleep(2000);
 		browser1.quit();
 		browser2.quit();
+		browser3.quit();
+		browser4.quit();
+		browser5.quit();
+		browser6.quit();
+		browser7.quit();
+		browser8.quit();
+		
 	}
 }
