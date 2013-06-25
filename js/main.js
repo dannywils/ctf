@@ -142,7 +142,7 @@ function game() {
 			} else {
 				//plot other players with blank markers
 				if(users[i].out == false){
-					map.placeMarker(users[i].uuid, users[i].location, users[i].username, '/images/' + flagcolors[users[i].team - 1] + '-player.png');
+					map.placeMarker(users[i].uuid, users[i].location, users[i].username, 'images/' + flagcolors[users[i].team - 1] + '-player.png');
 				}
 			}
 			// the user is an oppenent
@@ -168,7 +168,7 @@ function game() {
 			$('button.tag').hide();
 		}
 		//plot yourself last
-		map.placeMarker(user.uuid, user.location, 'You (' + user.username + ')', '/images/' + flagcolors[user.team - 1] + '-player.png');
+		map.placeMarker(user.uuid, user.location, 'You (' + user.username + ')', 'images/' + flagcolors[user.team - 1] + '-player.png');
 		if (user.hasflag) {
 			$(".message").show();
 		}
@@ -180,7 +180,7 @@ function game() {
 			var team = teams[i];
 			//hide the flag if it's been picked up
 			if (team.pickedup === undefined || !team.pickedup) {
-				map.placeMarker(team.uuid, team.flag, 'Flag ' + team.team, '/images/' + flagcolors[team.team - 1] + '-flag.png');
+				map.placeMarker(team.uuid, team.flag, 'Flag ' + team.team, 'images/' + flagcolors[team.team - 1] + '-flag.png');
 			}
 			map.placeCircle(team.team, team.base, basecolors[team.team - 1]);
 			// set the flag as placed
