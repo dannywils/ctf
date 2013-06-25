@@ -150,6 +150,7 @@ function game() {
 				&& user.location !== undefined
 				&& user.out == false
 				&& users[i].out == false
+				&& users[i].location !== undefined
 			){
 				var lat1 = user.location.split(",")[0];
 				var lon1 = user.location.split(",")[1];
