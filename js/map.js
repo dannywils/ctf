@@ -147,6 +147,9 @@ function mapper() {
 				this.createMarker(uuid, latlng, text, icon);
 				return;
 			}
+			if(marker.getMap() == null){
+				marker.setMap(map);
+			}
 			// if the location has changed, update it
 			if (!marker.getPosition().equals(latlng)) {
 				marker.setPosition(latlng);

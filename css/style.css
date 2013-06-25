@@ -37,7 +37,8 @@ input, button {
 	height: 100%;
 	position:relative;
 }
-.captain, .player, .message, .placeflag, .captureflag {
+.captain, .player, .message, 
+.placeflag, .captureflag, .tag {
 	display:none;
 }
 .message {

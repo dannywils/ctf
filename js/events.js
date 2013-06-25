@@ -9,7 +9,14 @@ $(function(){
 		$(".message").show();
 		db.update('teams', { team: otherTeam(user.team) }, { pickedup: true });
 		db.update('users',{ uuid: user.uuid }, { hasflag: true });
+	});
 
+	//tag the opponent
+	$('button.tag').click(function () {
+		var uuid = $(this).data('uuid');
+		db.update('users',{ uuid: uuid }, { out: true, hasflag: false });
+		//hide the opponent
+		markers[uuid].setMap(null);
 	});
 
 	//place the flag

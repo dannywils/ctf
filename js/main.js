@@ -68,6 +68,7 @@ function game() {
 						team: team.team,
 						captain: team.captain,
 						date: new Date().toISOString(),
+						out: false,
 					}
 					$.when(db.insert("users", user)).then(function () {
 						startGame();
@@ -112,15 +113,27 @@ function game() {
 				checkBase();
 			}
 
+			if(user.out){
+				$('.player').hide();
+				$('.message').show();
+			}
 		});
 		//if user has the flag and theyre in their base, score
 		if (user.hasflag && inBase(user.team)) {
 			score();
 		}
+
+		if(user.out && inBase(user.team)) {
+			user.out = false;
+			$('.player').show();
+			$('.message').hide();
+			db.update('users',{ uuid: user.uuid }, { out: false });
+		}
 	}
 
 	//handle users return by the service
 	var handleUsers = function (users) {
+		var enemies = 0;
 		//plot the other users
 		for (var i = users.length - 1; i >= 0; i--) {
 			// update the current users information
@@ -128,9 +141,32 @@ function game() {
 				user = users[i];
 			} else {
 				//plot other players with blank markers
-				map.placeMarker(users[i].uuid, users[i].location, users[i].username, 'http://maps.google.com/mapfiles/kml/paddle/' + flagcolors[users[i].team - 1] + '-blank.png');
+				if(users[i].out == false){
+					map.placeMarker(users[i].uuid, users[i].location, users[i].username, 'http://maps.google.com/mapfiles/kml/paddle/' + flagcolors[users[i].team - 1] + '-blank.png');
+				}
 			}
-		};
+			// the user is an oppenent
+			if(users[i].team !== user.team 
+				&& user.location !== undefined
+				&& user.out == false
+				&& users[i].out == false
+			){
+				var lat1 = user.location.split(",")[0];
+				var lon1 = user.location.split(",")[1];
+
+				var lat2 = users[i].location.split(",")[0];
+				var lon2 = users[i].location.split(",")[1];
+				// 5 meters
+				var tagDistance = 0.005;
+				if(getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) < tagDistance){
+					enemies++;
+					$('button.tag').data('uuid',users[i].uuid).show();
+				} 
+			}
+		} 
+		if(enemies == 0){
+			$('button.tag').hide();
+		}
 		//plot yourself last
 		map.placeMarker(user.uuid, user.location, 'You (' + user.username + ')', 'http://maps.google.com/mapfiles/kml/paddle/' + flagcolors[user.team - 1] + '-diamond.png');
 		if (user.hasflag) {
