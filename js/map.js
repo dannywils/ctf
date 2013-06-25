@@ -29,7 +29,7 @@ function mapper() {
 				  {
 				    "featureType": "water",
 				    "stylers": [
-				      { "color": "#4b59dc" }
+				      { "color": "#FF9546" }
 				    ]
 				  },{
 				    "featureType": "road.arterial",
