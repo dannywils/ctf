@@ -182,10 +182,25 @@ public class Main {
 		
 		
 		//Make sure player 2 was tagged
-		
-		
-		
 		assertEquals("Check if player 2 is tagged by seeing if their tag button is not showing", false, tagButton.isDisplayed());
+		
+		Thread.sleep(1000);
+		
+		//Return player 2 to their base
+		((JavascriptExecutor) browser2)
+		.executeScript("game.updateCoords({latitude: 2,longitude: 2})");
+		
+		Thread.sleep(1000);
+		
+		//Return player 2 to player 1's location
+		((JavascriptExecutor) browser2)
+		.executeScript("game.updateCoords({latitude: 3,longitude: 3})");
+		
+		Thread.sleep(1000);
+		
+		//If player 2 has the option to tag then returning to base was a success
+		assertEquals("Check if player 2 tag button is visible", true, tagButton.isDisplayed());
+		
 	}
 	
 
