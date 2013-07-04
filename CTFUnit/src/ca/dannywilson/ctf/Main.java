@@ -155,6 +155,38 @@ public class Main {
 		assertEquals("Check team 2 score", "1", team2_score);
 
 	}
+	//tagging
+	@Test
+	public void test5() throws Exception {
+		
+		((JavascriptExecutor) browser1)
+		.executeScript("game.updateCoords({latitude: 3,longitude: 3})");
+
+		Thread.sleep(2000);
+		
+		((JavascriptExecutor) browser2)
+				.executeScript("game.updateCoords({latitude: 3,longitude: 3})");
+		
+		Thread.sleep(1000);
+		
+		//Tag player 2
+		
+		WebElement tagButton = browser1.findElementByClassName("tag");
+		if (tagButton.isDisplayed()) {
+			tagButton.click();
+		}
+		
+		tagButton = browser2.findElementByClassName("tag");
+		
+		Thread.sleep(1000);
+		
+		
+		//Make sure player 2 was tagged
+		
+		
+		
+		assertEquals("Check if player 2 is tagged by seeing if their tag button is not showing", false, tagButton.isDisplayed());
+	}
 	
 
 	// Sleep 1 seconds between each test
