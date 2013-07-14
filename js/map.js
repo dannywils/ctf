@@ -25,7 +25,7 @@ function mapper() {
 		scaleControl: true,
 		backgroundColor: '#4b59dc',
 		draggable: true,
-		styles: [
+		/*styles: [
 				  {
 				    "featureType": "water",
 				    "stylers": [
@@ -115,7 +115,7 @@ function mapper() {
 						{ "color": "#ffffff" }
 					]
 				  }
-				  ]
+				  ]*/
 	});
 	this.map = map;
 
