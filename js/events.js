@@ -17,6 +17,8 @@ $(function(){
 		db.update('users',{ uuid: uuid }, { out: true, hasflag: false });
 		//hide the opponent
 		markers[uuid].setMap(null);
+		//upgrade tag distance!
+		user.tagDistance += 0.005;
 	});
 
 	//place the flag

@@ -38,6 +38,7 @@ function game() {
 		user = {
 			uuid: uuid,
 			username: username
+			tagDistance = 0.005;
 		};
 
 	}
@@ -112,7 +113,7 @@ function game() {
 			if (userHasFlag(users[0]), otherTeam(user.team)) {
 				checkBase();
 			}
-
+			//user was tagged
 			if(user.out){
 				$('.player').hide();
 				$('.message').show();
@@ -122,9 +123,10 @@ function game() {
 		if (user.hasflag && inBase(user.team)) {
 			score();
 		}
-
+		//respawn
 		if(user.out && inBase(user.team)) {
 			user.out = false;
+			user.tagDistance = 0.005;
 			$('.player').show();
 			$('.message').hide();
 			db.update('users',{ uuid: user.uuid }, { out: false });
@@ -146,7 +148,7 @@ function game() {
 				}
 			}
 			// the user is an oppenent
-			if(users[i].team !== user.team 
+			if(users[i].team !== user.team
 				&& user.location !== undefined
 				&& user.out == false
 				&& users[i].out == false
@@ -158,13 +160,13 @@ function game() {
 				var lat2 = users[i].location.split(",")[0];
 				var lon2 = users[i].location.split(",")[1];
 				// 5 meters
-				var tagDistance = 0.005;
-				if(getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) < tagDistance){
+
+				if(getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) < user.tagDistance){
 					enemies++;
 					$('button.tag').data('uuid',users[i].uuid).show();
-				} 
+				}
 			}
-		} 
+		}
 		if(enemies == 0){
 			$('button.tag').hide();
 		}
