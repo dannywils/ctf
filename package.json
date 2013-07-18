@@ -1,0 +1,21 @@
+{
+  "name": "ctf",
+  "version": "0.1.0",
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-uglify": "~0.2.2"
+  },
+  "readmeFilename": "README.md",
+  "gitHead": "18d5f97343cf2737a8ddf8b4bf28d02d0351d5de",
+  "description": "A location based capture the flag game for [CSCI 3130](http://web.cs.dal.ca/~reilly/CSCI3130/index.html) at Dalhousie University.",
+  "main": "Gruntfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dannywils/ctf.git"
+  },
+  "author": "",
+  "license": "MIT"
+}
