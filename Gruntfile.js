@@ -9,12 +9,14 @@ grunt.initConfig({
 		},
 		my_target: {
 			files: {
-				'script.min.js': ['js/events.js',
+				'script.min.js': [
+				'js/jquery.cookie.js',
+				'js/mongo.js',
 				'js/helpers.js',
+				'js/map.js',
 				'js/main.js',
-				'js/map.js',
-				'js/map.js',
-				'js/mongo.js']
+				'js/events.js',
+				]
 			}
 		}
 	}
