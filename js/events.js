@@ -18,7 +18,7 @@ $(function(){
 		//hide the opponent
 		markers[uuid].setMap(null);
 		//upgrade tag distance!
-		user.tagDistance += 0.005;
+		tagDistance += 0.005;
 	});
 
 	//place the flag

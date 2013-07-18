@@ -8,6 +8,7 @@ var flagcolors = ['red', 'blu'];
 var basecolors = ['red', 'blue'];
 var bases = [false, false];
 var db, map, game;
+var tagDistance = 0.005;
 
 window.onload = function () {
 	game = new game();
@@ -37,8 +38,7 @@ function game() {
 		}
 		user = {
 			uuid: uuid,
-			username: username
-			tagDistance = 0.005;
+			username: username,
 		};
 
 	}
@@ -126,7 +126,7 @@ function game() {
 		//respawn
 		if(user.out && inBase(user.team)) {
 			user.out = false;
-			user.tagDistance = 0.005;
+			tagDistance = 0.005;
 			$('.player').show();
 			$('.message').hide();
 			db.update('users',{ uuid: user.uuid }, { out: false });
@@ -161,7 +161,7 @@ function game() {
 				var lon2 = users[i].location.split(",")[1];
 				// 5 meters
 
-				if(getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) < user.tagDistance){
+				if(getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) < tagDistance){
 					enemies++;
 					$('button.tag').data('uuid',users[i].uuid).show();
 				}
