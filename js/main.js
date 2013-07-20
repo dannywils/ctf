@@ -85,7 +85,6 @@ function game() {
 		if (user.captain) {
 			$('.captain').show();
 		}
-		$('.player').show();
 		$(".team").html("Team " + user.team);
 		$(".overlay").addClass('team' + user.team);
 		//show the map
@@ -109,6 +108,10 @@ function game() {
 		).then(function (users, flags) {
 			handleUsers(users[0]);
 			handleFlags(flags[0]);
+			//if both the bases are placed, show the buttons
+			if(bases[0] && bases[1]){
+				$('.player').show();
+			}
 			//if nobody has the opponents flag, check if we're able to pick it up
 			if (userHasFlag(users[0]), otherTeam(user.team)) {
 				checkBase();
