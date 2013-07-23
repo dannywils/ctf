@@ -6,7 +6,7 @@
 var user = null;
 var flagcolors = ['red', 'blu'];
 var basecolors = ['red', 'blue'];
-var bases = [false, false];
+var bases = [];
 var db, map, game;
 var tagDistance = 0.005;
 
