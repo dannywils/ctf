@@ -109,7 +109,7 @@ function game() {
 			handleUsers(users[0]);
 			handleFlags(flags[0]);
 			//if both the bases are placed, show the buttons
-			if(bases[0] && bases[1]){
+			if(bases[user.team] && bases[otherTeam(user.team)]){
 				$('.player').show();
 			}
 			//if nobody has the opponents flag, check if we're able to pick it up
