@@ -135,6 +135,7 @@ function game() {
 			$('.message').hide();
 			db.update('users',{ uuid: user.uuid }, { out: false });
 		}
+		$(".tagdistance").text("Tag distance: " + tagDistance * 1000 + "m");
 	}
 
 	//handle users return by the service
