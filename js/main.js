@@ -124,6 +124,7 @@ function game() {
 		});
 		//if user has the flag and theyre in their base, score
 		if (user.hasflag && inBase(user.team)) {
+			$('.message').hide();
 			score();
 		}
 		//respawn

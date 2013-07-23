@@ -93,7 +93,6 @@ function score(){
 		return;
 	}
 	user.hasflag = false;
-	$(".message").hide();
 	$("#scored").slideDown('slow').delay(1500).slideUp('slow');
 	$.when(
 		db.select('teams',{ team: user.team }),
